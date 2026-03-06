@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Herramienta Censador</string>
+    <!--  Copyrigth  -->
+    <string name="copyrightNotice">© 2026 \n\nNelson Andrés Acuña Cambronero. \n\nTodos los derechos reservados.</string>
+    <string name="camposNulos"> *-*-*-*</string>
+    <string name="logoApp"> Logo de la aplicación</string>
+    <!--  Menú del activity main  -->
+    <string name="am_op1"> 1. Nueva visita</string>
+    <string name="am_op2"> 2. Nuevo cliente</string>
 </resources>
