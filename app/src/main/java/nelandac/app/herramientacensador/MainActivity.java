@@ -1,8 +1,12 @@
 package nelandac.app.herramientacensador;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +14,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import nelandac.app.herramientacensador.vistas_usuario.Act_NuevaVisita;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,9 +25,21 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
+
+        /// Activamos el ToolBar para visualización de herramientas y menú
         Toolbar toolbar = findViewById(R.id.am_toolbar);
         setSupportActionBar(toolbar);
 
+        /// Mostramos la versión de la App al Usuario
+        TextView tvVersionApp;
+        tvVersionApp = findViewById(R.id.tv_versionInformacion);
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName; //Aquí se obtiene la vesión de la Ap
+            tvVersionApp.setText(String.format("%s%s", getString(R.string.tituloVersion), version));
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -31,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     }//Fin del OnCreate
 
     void ir_nueva_visita(){
-
+        Intent inteNuevaVisita = new Intent(this, Act_NuevaVisita.class);
+        startActivity(inteNuevaVisita);
     }
 
     /// Metódos para diferentes componentes ya prediseñados por AndroidStudios

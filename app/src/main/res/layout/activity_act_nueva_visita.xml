@@ -7,4 +7,347 @@
     android:layout_height="match_parent"
     tools:context=".vistas_usuario.Act_NuevaVisita">
 
+    <!--ToolBar-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/aNueVisita_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/toolbarColor"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/tituloNuevaVisita"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="665dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/aNueVisita_toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titPais"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinPaises"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/nombPaises"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titProspectorComercial"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinProspector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/nombCensadores"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titTipoCliente"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinTipCliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/tipoCliente"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titNombreComercial"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtNombComercial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:minHeight="50dp"
+                android:inputType="text"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titNombreCompleto"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtNombCliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:minHeight="50dp"
+                android:inputType="textPersonName"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titTipoIdentificacion"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinTipoId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/tipoIdentificacion"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titNumIndentificacion"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtIdCliente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:minHeight="50dp"
+                android:inputType="number"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titCoordeDireccion"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtCoordenadas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:minHeight="50dp"
+                android:inputType="text|number"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titClasNegocio"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinClasNegocio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titTelefono"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="phone"
+                android:minHeight="50dp"
+                android:inputType="phone"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titLinkGoogleMaps"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtLinkGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:minHeight="50dp"
+                android:inputType="textUri"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titModulo"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtModuloVisita"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:minHeight="50dp"
+                android:inputType="number"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titFotoNegocio"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtFotoComercio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:minHeight="50dp"
+                android:inputType="text"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titDiaVisita"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinDiaVisita"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/diaSemana"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titApoyoSupervisor"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinSolicApoyo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/opcSiNo"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titFecha"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtFechaApoyo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:minHeight="50dp"
+                android:inputType="date"
+                android:hint="@string/camposNulos" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titVenta"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinClieVenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/opcSiNo"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titClienteNuevo"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinClieNuevo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/opcSiNo"
+                android:minHeight="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titClienteCodigo"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/spinClieCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/opcSiNo"
+                android:minHeight="50dp" />
+
+            <Button
+                android:id="@+id/btnGuardarNueVis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="50dp"
+                android:text="@string/btnGuardar" />
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

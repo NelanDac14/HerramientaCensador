@@ -8,16 +8,18 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--ToolBar-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/am_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:backgroundTint="@color/toolbarColor"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/white" />
 
     <ImageView
         android:id="@+id/IvLogoApp"
@@ -34,9 +36,10 @@
     <ScrollView
         android:id="@+id/scrollViewMain"
         android:layout_width="409dp"
-        android:layout_height="355dp"
+        android:layout_height="330dp"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
+        android:contentDescription="@string/camposNulos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/IvLogoApp">
@@ -52,14 +55,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:clickable="true"
         android:minHeight="48dp"
         android:text="@string/copyrightNotice"
         android:textAlignment="center"
         android:textColor="#006F84"
         android:textStyle="bold"
-        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollViewMain" />
+
+    <TextView
+        android:id="@+id/tv_versionInformacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:textAlignment="center"
+        android:textColor="#006F84"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_InformacionDesarrollador" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

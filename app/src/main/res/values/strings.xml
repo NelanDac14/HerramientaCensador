@@ -4,7 +4,100 @@
     <string name="copyrightNotice">© 2026 \n\nNelson Andrés Acuña Cambronero. \n\nTodos los derechos reservados.</string>
     <string name="camposNulos"> *-*-*-*</string>
     <string name="logoApp"> Logo de la aplicación</string>
+
     <!--  Menú del activity main  -->
     <string name="am_op1"> 1. Nueva visita</string>
     <string name="am_op2"> 2. Nuevo cliente</string>
+    <string name="tituloVersion">"Versión: "</string>
+    <string name="tituloNuevaVisita">Nueva visita</string>
+
+    <!--  Formulario de nueva visita  -->
+    <string name="titPais"> País:</string>
+    <string name="titProspectorComercial"> Prospector encargado:</string>
+    <string name="titTipoCliente"> Tipo de cliente:</string>
+    <string name="titNombreComercial"> Nombre comercial:</string>
+    <string name="titNombreCompleto"> Nombre completo cliente:</string>
+    <string name="titTipoIdentificacion"> Tipo de identificación:</string>
+    <string name="titNumIndentificacion"> Número de indentificación:</string>
+    <string name="titCoordeDireccion"> Dirección en coordenadas:</string>
+    <string name="titClasNegocio"> Clasificación de negocio:</string>
+    <string name="titTelefono"> Teléfono de contacto:</string>
+    <string name="titLinkGoogleMaps"> Link Google Maps:</string>
+    <string name="titModulo"> Módulo:</string>
+    <string name="titFotoNegocio"> Foto del negocio:</string>
+    <string name="titDiaVisita"> Día de visita:</string>
+    <string name="titApoyoSupervisor"> ¿Solicita apoyo de supervisor?</string>
+    <string name="titFecha"> Fecha coordinada:</string>
+    <string name="titVenta"> ¿Es cliente con venta?</string>
+    <string name="titClienteNuevo"> ¿Es cliente nuevo?</string>
+    <string name="titClienteCodigo"> ¿El cliente ya tiene código?</string>
+
+    <!--Botones-->
+    <string name="btnGuardar"> Guardar</string>
+
+    <!-- Spinner: Días de la semana -->
+    <string-array name="diaSemana">
+        <item>Seleccionar</item>
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+    </string-array>
+
+    <!-- Spinner: Nombre de los paises -->
+    <string-array name="nombPaises">
+        <item>Seleccionar</item>
+        <item>Costa Rica</item>
+        <item>Panamá</item>
+    </string-array>
+
+    <!-- Spinner: Elección de sí o no -->
+    <string-array name="opcSiNo">
+        <item>Seleccionar</item>
+        <item>Sí</item>
+        <item>No</item>
+    </string-array>
+
+    <!-- Spinner: Tipo de documento de identificación -->
+    <string-array name="tipoIdentificacion">
+        <item>Seleccionar</item>
+        <item>Cédula Nacional</item>
+        <item>Cédula Jurídica</item>
+        <item>Cédula de Residencia</item>
+        <item>Número de Pasaporte</item>
+        <item>NITE</item> <!--NITE (Número Interno de Tributación Especial)-->
+    </string-array>
+
+    <!-- Spinner: Tipo de cliente -->
+    <string-array name="tipoCliente">
+        <item>Seleccionar</item>
+        <item>Natural</item>
+        <item>Jurídico</item>
+    </string-array>
+
+    <!-- Spinner: Nombre de Censadores -->
+    <string-array name="nombCensadores">
+        <item>Seleccionar</item>
+        <item>Erick Sánchez</item>
+        <item>Jesús Jiménez</item>
+        <item>Maria de los Ángeles</item>
+        <item>Pablo Abab</item>
+        <item>Jerson Mora</item>
+        <item>Eduardo Ramírez</item>
+        <item>92204 - Anneth del Cármen Villarreal C</item>
+        <item>89686 - Ignacio Coparropa Pérez</item>
+        <item>91673 - Luis Aguilar Caballero</item>
+        <item>92312 - Jean Aldair Brokamp Quiñones</item>
+        <item>Jender Gerardo Calvo Álvarez</item>
+        <item>Pedro Josué Argüello Larios</item>
+        <item>Francisco Armando Aguilar Vasconcelo</item>
+        <item>Rodrigo Agüero Cerdas</item>
+        <item>Nelson Andrés Acuña Cambronero</item>
+        <item>Wiston Cornejo</item>
+        <item>Joel Ruíz</item>
+        <item>Pedro Morales Cubillo</item>
+    </string-array>
+
 </resources>
