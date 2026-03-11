@@ -264,23 +264,50 @@
                 android:inputType="number"
                 android:minHeight="50dp" />
 
-            <!--Foto del negocio-->
-            <TextView
+            <!--Foto del comercio-->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titFotoNegocio"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:layout_marginTop="12dp">
 
-            <EditText
-                android:id="@+id/edtFotoComercio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="@string/camposNulos"
-                android:inputType="text"
-                android:minHeight="50dp" />
+                <TextView
+                    android:id="@+id/txtFotoTitulo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/titFotoNegocio"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="6dp"/>
+
+                <ImageView
+                    android:id="@+id/imgFotoComercio"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:background="@android:color/darker_gray"
+                    android:contentDescription="@string/foto_comercio"/>
+
+                <EditText
+                    android:id="@+id/edtFotoComercio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ruta_de_la_foto"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:autofillHints=""
+                    android:inputType="text"
+                    android:minHeight="50dp"
+                    android:layout_marginTop="6dp"/>
+
+                <Button
+                    android:id="@+id/btnTomarFoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tomar_foto_del_comercio"
+                    android:layout_marginTop="8dp"/>
+
+            </LinearLayout>
 
             <!--Día de visita-->
             <TextView

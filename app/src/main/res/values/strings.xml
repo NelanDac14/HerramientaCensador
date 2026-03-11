@@ -37,6 +37,9 @@
     <string name="btnGuardar"> Guardar</string>
     <string name="btnGenerar"> Generar</string>
     <string name="btnObtener"> Obtener</string>
+    <string name="foto_comercio">Foto del comercio</string>
+    <string name="ruta_de_la_foto">Ruta de la foto</string>
+    <string name="tomar_foto_del_comercio">Tomar foto del comercio</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

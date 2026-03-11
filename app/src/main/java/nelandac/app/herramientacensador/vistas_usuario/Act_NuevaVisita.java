@@ -1,9 +1,11 @@
 package nelandac.app.herramientacensador.vistas_usuario;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,24 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
@@ -41,9 +61,14 @@ public class Act_NuevaVisita extends AppCompatActivity {
     private EditText txvNombComercial, txvNombCliente, txvNumIdentificacion,
             txvCoordenadas, txvNumTelefono, txvLinkGoogle, txvModulo,
             txvFotoComercio, txvFechaSupervisor;
-    private Button btnObtener, btnGuardar;
+
+    private ImageView imgFotoComercio;
+    private Button btnObtener, btnGuardar, btnFotoComercio;
 
     private FusedLocationProviderClient fusedLocationClient;
+    private Uri photoUri;
+    private String rutaFotoActual;
+    private ActivityResultLauncher<Uri> cameraLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +78,30 @@ public class Act_NuevaVisita extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         iniVistas();
         initListeners();
+        //Iniciamos el launcher de la cámara
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                result -> {
+
+                    if(result){
+
+                        txvFotoComercio.setText(rutaFotoActual);
+
+                        // AQUÍ VA
+                        imgFotoComercio.setImageURI(photoUri);
+
+                        Toast.makeText(this,
+                                "Foto tomada correctamente",
+                                Toast.LENGTH_SHORT).show();
+
+                    }else{
+
+                        Toast.makeText(this,
+                                "No se tomó la foto",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -62,7 +111,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
     }
 
     /// Método que nos inicializa todas las de la actividad actual
-    private void iniVistas(){
+    private void iniVistas() {
         /// Activamos el ToolBar para visualización de herramientas y menú
         //Toolbar
         toolbar = findViewById(R.id.nueVisita_toolbar);
@@ -88,11 +137,16 @@ public class Act_NuevaVisita extends AppCompatActivity {
         txvModulo = findViewById(R.id.edtModuloVisita);
         txvFotoComercio = findViewById(R.id.edtFotoComercio);
         txvFechaSupervisor = findViewById(R.id.edtFechaApoyo);
+        //ImageView
+        imgFotoComercio = findViewById(R.id.imgFotoComercio);
         //Button
         btnObtener = findViewById(R.id.btnNVObtCoordenadas);
         btnGuardar = findViewById(R.id.btnNVGuardar);
+        btnFotoComercio = findViewById(R.id.btnTomarFoto);
+
 
     }
+
     /// Método que nos ayuda a validar que todos los campos estén debidamente llenos o seleccionados
     private boolean validarCamposVisita() {
 
@@ -109,7 +163,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
                 spinCodigo);
 
         for (EditText editText : editTexts) {
-            if(editText.getText().toString().trim().isEmpty()) {
+            if (editText.getText().toString().trim().isEmpty()) {
                 editText.setError(getString(R.string.camposObligatorios));
                 editText.requestFocus();
                 return false;
@@ -134,13 +188,15 @@ public class Act_NuevaVisita extends AppCompatActivity {
         return true;
     }
 
-    private void initListeners(){
+    private void initListeners() {
         btnGuardar.setOnClickListener(v -> guardarVisita());
         btnObtener.setOnClickListener(v -> obtenerCoordenadas());
+        btnFotoComercio.setOnClickListener(v -> tomarFotoComercio());
     }
+
     /// Método que nos permite obtener las coordenadas de la ubicación en donde nos encontramos
 
-    private void obtenerCoordenadas(){
+    private void obtenerCoordenadas() {
 
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -198,38 +254,38 @@ public class Act_NuevaVisita extends AppCompatActivity {
         });
     }
 
-    private void guardarVisita(){
+    private void guardarVisita() {
 
         /*Primero validamos que todos los espacios estén debidamente
         llenos*/
-            if(!validarCamposVisita()){
-                return;
-            }
+        if (!validarCamposVisita()) {
+            return;
+        }
 
-            Visita visita = obtenerDatosFormulario();
+        Visita visita = obtenerDatosFormulario();
 
-            VisitaDAO visitaDAO = new VisitaDAO(this);
+        VisitaDAO visitaDAO = new VisitaDAO(this);
 
-            long resultado = visitaDAO.insertVisita(visita);
+        long resultado = visitaDAO.insertVisita(visita);
 
-            if(resultado > 0){
+        if (resultado > 0) {
 
-                Toast.makeText(this,
-                        "Visita registrada correctamente",
-                        Toast.LENGTH_LONG).show();
-                //Recrea la activity
-                recreate();
+            Toast.makeText(this,
+                    "Visita registrada correctamente",
+                    Toast.LENGTH_LONG).show();
+            //Recrea la activity
+            recreate();
 
-            }else{
+        } else {
 
-                Toast.makeText(this,
-                        "Error al registrar la visita",
-                        Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(this,
+                    "Error al registrar la visita",
+                    Toast.LENGTH_LONG).show();
+        }
 
     }
 
-    private Visita obtenerDatosFormulario(){
+    private Visita obtenerDatosFormulario() {
 
         Visita visita = new Visita();
 
@@ -248,7 +304,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         // Separar latitud y longitud
         String[] latLng = txvCoordenadas.getText().toString().split(",");
 
-        if(latLng.length == 2){
+        if (latLng.length == 2) {
             visita.setLatitud(Double.parseDouble(latLng[0]));
             visita.setLongitud(Double.parseDouble(latLng[1]));
         }
@@ -269,7 +325,66 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
         return visita;
     }
+    private void tomarFotoComercio(){
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    101);
 
+            return;
+        }
+
+        try {
+
+            File photoFile = crearArchivoImagen();
+
+            photoUri = FileProvider.getUriForFile(
+                    this,
+                    "nelandac.app.herramientacensador.provider",
+                    photoFile
+            );
+
+            Log.d("FOTO_PATH", photoFile.getAbsolutePath());
+            Log.d("FOTO_URI", photoUri.toString());
+            //Lanzamos la cámara
+            cameraLauncher.launch(photoUri);
+
+        } catch (IOException e) {
+
+            Toast.makeText(this,
+                    "Error creando archivo de imagen",
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private File crearArchivoImagen() throws IOException {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                .format(new Date());
+
+        String imageFileName = "FOTO_COMERCIO_" + timeStamp;
+
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if (storageDir == null) {
+            throw new IOException("Directorio de almacenamiento no disponible");
+        }
+
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        rutaFotoActual = image.getAbsolutePath();
+
+        return image;
+    }
 }
