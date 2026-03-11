@@ -3,6 +3,7 @@
     <!--  Copyrigth  -->
     <string name="copyrightNotice">© 2026 \n\nNelson Andrés Acuña Cambronero. \n\nTodos los derechos reservados.</string>
     <string name="camposNulos"> *-*-*-*</string>
+    <string name="camposObligatorios"> Este campo es obligatorio</string>
     <string name="logoApp"> Logo de la aplicación</string>
 
     <!--  Menú del activity main  -->
@@ -34,6 +35,8 @@
 
     <!--Botones-->
     <string name="btnGuardar"> Guardar</string>
+    <string name="btnGenerar"> Generar</string>
+    <string name="btnObtener"> Obtener</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
@@ -98,6 +101,33 @@
         <item>Wiston Cornejo</item>
         <item>Joel Ruíz</item>
         <item>Pedro Morales Cubillo</item>
+    </string-array>
+
+    <!-- Spinner: Giro de Negocio -->
+    <string-array name="tipoComercio">
+        <item>Seleccionar</item>
+        <item>Supermercado</item>
+        <item>Minisúper</item>
+        <item>Pulpería</item>
+        <item>Restaurante</item>
+        <item>Soda</item>
+        <item>Comida rápida</item>
+        <item>Food Truck</item>
+        <item>Carnicería/Pescadería</item>
+        <item>Verdulería/Frutería</item>
+        <item>Heladería</item>
+        <item>Bar</item>
+        <item>Panadería/Pastelería</item>
+        <item>Ferretería</item>
+        <item>Farmacia</item>
+        <item>Tienda de ropa</item>
+        <item>Hotel</item>
+        <item>Cabinas</item>
+        <item>Lavandería</item>
+        <item>Zapatería</item>
+        <item>Librería/Papelería</item>
+        <item>Centro de copiado</item>
+        <item>Taller mecánico</item>
     </string-array>
 
 </resources>

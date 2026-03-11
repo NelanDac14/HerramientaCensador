@@ -9,7 +9,7 @@
 
     <!--ToolBar-->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/aNueVisita_toolbar"
+        android:id="@+id/nueVisita_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -21,6 +21,7 @@
         app:title="@string/tituloNuevaVisita"
         app:titleTextColor="@color/white" />
 
+    <!--ScrollView Principal-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="665dp"
@@ -32,13 +33,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/aNueVisita_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/nueVisita_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!--Países-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,6 +56,7 @@
                 android:entries="@array/nombPaises"
                 android:minHeight="50dp" />
 
+            <!--Prospector encargado-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,6 +72,7 @@
                 android:entries="@array/nombCensadores"
                 android:minHeight="50dp" />
 
+            <!--Tipo de cliente-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,6 +88,7 @@
                 android:entries="@array/tipoCliente"
                 android:minHeight="50dp" />
 
+            <!--Nombre Comercial-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,10 +102,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="name"
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="text"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Nombre del cliente-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,10 +120,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="name"
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="textPersonName"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Tipo de identificación-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -133,6 +140,7 @@
                 android:entries="@array/tipoIdentificacion"
                 android:minHeight="50dp" />
 
+            <!--Número de Identificación-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,27 +154,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="name"
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="number"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/titCoordeDireccion"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/edtCoordenadas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:minHeight="50dp"
-                android:inputType="text|number"
-                android:hint="@string/camposNulos" />
-
+            <!--Clasificación de negocios-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,8 +171,10 @@
                 android:id="@+id/spinClasNegocio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:entries="@array/tipoComercio"
                 android:minHeight="50dp" />
 
+            <!--Teléfono de contacto-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -194,9 +188,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="phone"
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="phone"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
+
+            <!--Dirección en coordenadas-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/titCoordeDireccion"
+                android:textColor="#006F84"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edtCoordenadas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:hint="@string/camposNulos"
+                    android:inputType="text|number"
+                    android:minHeight="50dp" />
+
+                <!--Botón de Obtener coordenadas-->
+                <Button
+                    android:id="@+id/btnNVObtCoordenadas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:minHeight="50dp"
+                    android:text="@string/btnObtener" />
+            </LinearLayout>
+
+            <!--Link de Google Maps-->
 
             <TextView
                 android:layout_width="match_parent"
@@ -208,13 +238,15 @@
 
             <EditText
                 android:id="@+id/edtLinkGoogle"
+                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="textUri"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Módulo-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -228,10 +260,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="number"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Foto del negocio-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -245,10 +278,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="text"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Día de visita-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,6 +298,7 @@
                 android:entries="@array/diaSemana"
                 android:minHeight="50dp" />
 
+            <!--Apoyo del supervisor-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -279,6 +314,7 @@
                 android:entries="@array/opcSiNo"
                 android:minHeight="50dp" />
 
+            <!--Fecha de visita coordinada-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -292,10 +328,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
-                android:minHeight="50dp"
+                android:hint="@string/camposNulos"
                 android:inputType="date"
-                android:hint="@string/camposNulos" />
+                android:minHeight="50dp" />
 
+            <!--Cliente con venta-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -311,6 +348,7 @@
                 android:entries="@array/opcSiNo"
                 android:minHeight="50dp" />
 
+            <!--Cliente nuevo-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -326,6 +364,7 @@
                 android:entries="@array/opcSiNo"
                 android:minHeight="50dp" />
 
+            <!--Cliente código-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -341,8 +380,9 @@
                 android:entries="@array/opcSiNo"
                 android:minHeight="50dp" />
 
+            <!--Botón de guardado-->
             <Button
-                android:id="@+id/btnGuardarNueVis"
+                android:id="@+id/btnNVGuardar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="50dp"

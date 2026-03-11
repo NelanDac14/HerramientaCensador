@@ -1,5 +1,6 @@
 package nelandac.app.herramientacensador;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_main);
+
+
+        /// Solicitamos los permisos correspondientes
+        //Permisos de gestión de ubicación
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         /// Activamos el ToolBar para visualización de herramientas y menú
         Toolbar toolbar = findViewById(R.id.am_toolbar);
@@ -48,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }//Fin del OnCreate
 
+    /// Métodos importantes
+    //Nos traslada a la vista de nueva visita para registrarla
     void ir_nueva_visita(){
         Intent inteNuevaVisita = new Intent(this, Act_NuevaVisita.class);
         startActivity(inteNuevaVisita);
