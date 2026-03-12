@@ -144,4 +144,36 @@ public class VisitaDAO {
         return resultado;
     }
 
+    public List<Visita> obtenerVisitas(){
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM visitas", null);
+
+        if(cursor.moveToFirst()){
+
+            do{
+
+                Visita v = new Visita();
+
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+                v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+
+                lista.add(v);
+
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return lista;
+    }
+
 }

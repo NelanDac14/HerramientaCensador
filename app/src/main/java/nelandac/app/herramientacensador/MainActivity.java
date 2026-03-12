@@ -18,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import nelandac.app.herramientacensador.vistas_usuario.Act_NuevaVisita;
+import nelandac.app.herramientacensador.vistas_usuario.ListaVisitasActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
         Intent inteNuevaVisita = new Intent(this, Act_NuevaVisita.class);
         startActivity(inteNuevaVisita);
     }
+    void ir_ver_visitas(){
+        Intent inteVerVisita = new Intent(this, ListaVisitasActivity.class);
+        startActivity(inteVerVisita);
+    }
 
     /// Metódos para diferentes componentes ya prediseñados por AndroidStudios
     //Metodo para mostrar el menú overflow de activity main
@@ -78,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.item_nueva_visita) {
             // Acción para el ítem "item_nuevo_viaje"
             ir_nueva_visita();
+            return true;
+        }
+        if (id == R.id.item_ver_visitas) {
+            // Acción para el ítem "item_ver_visitas"
+            ir_ver_visitas();
             return true;
         }
 

@@ -20,6 +20,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HerramientaCensador">
+        <activity android:name=".vistas_usuario.ListaVisitasActivity"/>
         <activity
             android:name=".vistas_usuario.Act_NuevaVisita"
             android:exported="false" />

@@ -40,6 +40,12 @@
     <string name="foto_comercio">Foto del comercio</string>
     <string name="ruta_de_la_foto">Ruta de la foto</string>
     <string name="tomar_foto_del_comercio">Tomar foto del comercio</string>
+    <string name="nombre_comercial">Nombre Comercial</string>
+    <string name="cliente">Cliente</string>
+    <string name="tel_fono">Teléfono</string>
+    <string name="dia_visita">Día Visita</string>
+    <string name="lat_lng">Lat,Long</string>
+    <string name="btnMaps">Ver en Maps</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
@@ -111,26 +117,28 @@
         <item>Seleccionar</item>
         <item>Supermercado</item>
         <item>Minisúper</item>
+        <item>Minisúper/Licorera</item>
+        <item>Minisúper/Carnicería</item>
         <item>Pulpería</item>
         <item>Restaurante</item>
         <item>Soda</item>
         <item>Comida rápida</item>
+        <item>Comida china</item>
+        <item>Pizzería</item>
         <item>Food Truck</item>
         <item>Carnicería/Pescadería</item>
         <item>Verdulería/Frutería</item>
         <item>Heladería</item>
         <item>Bar</item>
+        <item>Bar/Restaurante</item>
         <item>Panadería/Pastelería</item>
         <item>Ferretería</item>
         <item>Farmacia</item>
-        <item>Tienda de ropa</item>
         <item>Hotel</item>
         <item>Cabinas</item>
-        <item>Lavandería</item>
-        <item>Zapatería</item>
         <item>Librería/Papelería</item>
-        <item>Centro de copiado</item>
         <item>Taller mecánico</item>
+        <item>Gimnasio</item>
     </string-array>
 
 </resources>
