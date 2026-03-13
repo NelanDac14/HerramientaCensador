@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,9 @@ public class VisitaDAO {
 
         int resultado = db.delete("visitas", "id=?", new String[]{String.valueOf(id)});
 
+        Log.d("SQL_DELETE","Filas borradas: " +
+                db.delete("visitas", "id = ?", new String[]{String.valueOf(id)}));
+
         db.close();
 
         return resultado;
@@ -158,6 +162,7 @@ public class VisitaDAO {
 
                 Visita v = new Visita();
 
+                v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
                 v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
                 v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
                 v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
@@ -165,6 +170,38 @@ public class VisitaDAO {
                 v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
                 v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
                 v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+
+                lista.add(v);
+
+            }while(cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
+    public List<Visita> obtenerVisitasPorFecha(String fecha){
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE fecha_coordinada = ? ORDER BY id",
+                new String[]{fecha});
+
+        if(cursor.moveToFirst()){
+
+            do{
+
+                Visita v = new Visita();
+
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
 
                 lista.add(v);
 

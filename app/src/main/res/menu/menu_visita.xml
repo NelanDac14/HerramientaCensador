@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuEditar"
+        android:title="@string/editar_registro"/>
+
+    <item
+        android:id="@+id/menuBorrar"
+        android:title="@string/borrar_registro"/>
+
+    <item
+        android:id="@+id/menuWhatsapp"
+        android:title="@string/enviar_whatsapp"/>
+
+    <item
+        android:id="@+id/menuMaps"
+        android:title="@string/ver_en_maps"/>
+
+</menu>

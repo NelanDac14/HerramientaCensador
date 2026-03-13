@@ -3,10 +3,12 @@ package nelandac.app.herramientacensador.vistas_usuario;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 import nelandac.app.herramientacensador.modelos.Visita;
 import nelandac.app.herramientacensador.modelos.VisitaDAO;

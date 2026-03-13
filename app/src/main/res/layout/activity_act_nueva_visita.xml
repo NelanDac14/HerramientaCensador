@@ -238,7 +238,6 @@
 
             <EditText
                 android:id="@+id/edtLinkGoogle"
-                android:focusable="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
@@ -268,44 +267,44 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/txtFotoTitulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
                     android:text="@string/titFotoNegocio"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:layout_marginBottom="6dp"/>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/imgFotoComercio"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop"
                     android:background="@android:color/darker_gray"
-                    android:contentDescription="@string/foto_comercio"/>
+                    android:contentDescription="@string/foto_comercio"
+                    android:scaleType="centerCrop" />
 
                 <EditText
                     android:id="@+id/edtFotoComercio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/ruta_de_la_foto"
-                    android:focusable="false"
-                    android:clickable="false"
+                    android:layout_marginTop="6dp"
                     android:autofillHints=""
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:hint="@string/ruta_de_la_foto"
                     android:inputType="text"
-                    android:minHeight="50dp"
-                    android:layout_marginTop="6dp"/>
+                    android:minHeight="50dp" />
 
                 <Button
                     android:id="@+id/btnTomarFoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tomar_foto_del_comercio"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginTop="8dp"
+                    android:text="@string/tomar_foto_del_comercio" />
 
             </LinearLayout>
 

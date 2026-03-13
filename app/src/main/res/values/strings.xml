@@ -8,7 +8,7 @@
 
     <!--  Menú del activity main  -->
     <string name="am_op1"> 1. Nueva visita</string>
-    <string name="am_op2"> 2. Nuevo cliente</string>
+    <string name="am_op2"> 2. Bitácora de visitas</string>
     <string name="tituloVersion">"Versión: "</string>
     <string name="tituloNuevaVisita">Nueva visita</string>
 
@@ -42,10 +42,16 @@
     <string name="tomar_foto_del_comercio">Tomar foto del comercio</string>
     <string name="nombre_comercial">Nombre Comercial</string>
     <string name="cliente">Cliente</string>
-    <string name="tel_fono">Teléfono</string>
+    <string name="telefono">Teléfono</string>
     <string name="dia_visita">Día Visita</string>
     <string name="lat_lng">Lat,Long</string>
     <string name="btnMaps">Ver en Maps</string>
+    <string name="opciones_de_visita">opciones de visita</string>
+    <string name="number_1">1.</string>
+    <string name="editar_registro">Editar registro</string>
+    <string name="borrar_registro">Borrar registro</string>
+    <string name="enviar_whatsapp">Enviar WhatsApp</string>
+    <string name="ver_en_maps">Ver en Maps</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
