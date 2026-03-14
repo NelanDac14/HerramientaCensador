@@ -58,7 +58,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
         holder.txtCoordenadas.setText(coords);
 
         // Cargar imagen con Glide
-        if(visita.getFotoNegocio() != null && !visita.getFotoNegocio().isEmpty()){
+        if (visita.getFotoNegocio() != null && !visita.getFotoNegocio().isEmpty()) {
 
             Glide.with(context)
                     .load(visita.getFotoNegocio())
@@ -130,7 +130,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
     }
 
     //Función para abrir google maps para llegar a la ubicación de la visita
-    private void abrirMaps(Visita visita){
+    private void abrirMaps(Visita visita) {
 
         String uri = "google.navigation:q=" +
                 visita.getLatitud() + "," +
@@ -143,7 +143,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
     }
 
     //Función para enviar mensaje por WhatsApp al cliente en caso de tener número
-    private void enviarWhatsApp(Visita visita){
+    private void enviarWhatsApp(Visita visita) {
 
         String telefono = visita.getTelefono();
 
@@ -156,7 +156,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
     }
 
     //Función para editar un registro de visita
-    private void editarRegistro(Visita visita){
+    private void editarRegistro(Visita visita) {
 
         Intent intent = new Intent(context, Act_NuevaVisita.class);
 
@@ -165,7 +165,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
         context.startActivity(intent);
     }
 
-    private void borrarRegistro(Visita visita){
+    private void borrarRegistro(Visita visita) {
 
         new AlertDialog.Builder(context)
                 .setTitle("Eliminar visita")
@@ -176,14 +176,14 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
 
                     VisitaDAO dao = new VisitaDAO(context);
 
-                    Log.d("DELETE_VISITA","Intentando borrar ID: " + visita.getId());
+                    Log.d("DELETE_VISITA", "Intentando borrar ID: " + visita.getId());
 
                     dao.deleteVisita(visita.getId());
 
                     int position = lista.indexOf(visita);
                     lista.remove(position);
 
-                    Toast.makeText(context,"Visita eliminada",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Visita eliminada", Toast.LENGTH_SHORT).show();
 
                     notifyItemRemoved(position);
 
@@ -193,7 +193,6 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
 
                 .show();
     }
-
 
 
 }

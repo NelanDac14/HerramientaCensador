@@ -61,6 +61,7 @@ public class Visita {
         this.estadoSync = estadoSync;
         this.fechaRegistro = fechaRegistro;
     }
+
     public Visita() {
         this.id = 0;
         this.pais = "";

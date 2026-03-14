@@ -1,5 +1,6 @@
 package nelandac.app.herramientacensador.vistas_usuario;
 
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,16 +26,12 @@ import android.content.pm.PackageManager;
 
 import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.widget.Toast;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -83,18 +80,24 @@ public class Act_NuevaVisita extends AppCompatActivity {
                 new ActivityResultContracts.TakePicture(),
                 result -> {
 
-                    if(result){
+                    if (result) {
 
                         txvFotoComercio.setText(rutaFotoActual);
 
-                        // AQUÍ VA
                         imgFotoComercio.setImageURI(photoUri);
+
+                        MediaScannerConnection.scanFile(
+                                this,
+                                new String[]{rutaFotoActual},
+                                null,
+                                null
+                        );
 
                         Toast.makeText(this,
                                 "Foto tomada correctamente",
                                 Toast.LENGTH_SHORT).show();
 
-                    }else{
+                    } else {
 
                         Toast.makeText(this,
                                 "No se tomó la foto",
@@ -273,8 +276,8 @@ public class Act_NuevaVisita extends AppCompatActivity {
             Toast.makeText(this,
                     "Visita registrada correctamente",
                     Toast.LENGTH_LONG).show();
-            //Recrea la activity
-            recreate();
+            //Limpia la vista
+            limpiarFormulario();
 
         } else {
 
@@ -325,7 +328,8 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
         return visita;
     }
-    private void tomarFotoComercio(){
+
+    private void tomarFotoComercio() {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -362,29 +366,60 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     private File crearArchivoImagen() throws IOException {
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
-                .format(new Date());
+        String timeStamp = new SimpleDateFormat(
+                "yyyyMMdd_HHmmss",
+                Locale.getDefault()
+        ).format(new Date());
 
-        String imageFileName = "FOTO_COMERCIO_" + timeStamp;
+        String imageFileName = "FOTO_COMERCIO_" + timeStamp + ".jpg";
 
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        if (storageDir == null) {
-            throw new IOException("Directorio de almacenamiento no disponible");
-        }
+        // Carpeta pública de imágenes
+        File storageDir = new File(
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES),
+                "HerramientaCensador"
+        );
 
         if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
-        File image = File.createTempFile(
-                imageFileName,
-                ".jpg",
-                storageDir
-        );
+        File image = new File(storageDir, imageFileName);
 
         rutaFotoActual = image.getAbsolutePath();
 
         return image;
+    }
+
+    private void limpiarFormulario() {
+
+        // Limpiar EditText
+        txvNombComercial.setText("");
+        txvNombCliente.setText("");
+        txvNumIdentificacion.setText("");
+        txvCoordenadas.setText("");
+        txvNumTelefono.setText("");
+        txvLinkGoogle.setText("");
+        txvModulo.setText("");
+        txvFotoComercio.setText("");
+        txvFechaSupervisor.setText("");
+
+        // Limpiar imagen
+        imgFotoComercio.setImageDrawable(null);
+
+        // Resetear Spinners
+        spinPais.setSelection(0);
+        spinProspector.setSelection(0);
+        spinTipoCliente.setSelection(0);
+        spinTipIdentificacion.setSelection(0);
+        spinClasComercio.setSelection(0);
+        spinDiaVisita.setSelection(0);
+        spinApoySupervisor.setSelection(0);
+        spinVenta.setSelection(0);
+        spinClieNuevo.setSelection(0);
+        spinCodigo.setSelection(0);
+
+        // Limpiar ruta de foto
+        rutaFotoActual = null;
     }
 }

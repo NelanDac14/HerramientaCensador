@@ -59,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
     /// Métodos importantes
     //Nos traslada a la vista de nueva visita para registrarla
-    void ir_nueva_visita(){
+    void ir_nueva_visita() {
         Intent inteNuevaVisita = new Intent(this, Act_NuevaVisita.class);
         startActivity(inteNuevaVisita);
     }
-    void ir_ver_visitas(){
+
+    void ir_ver_visitas() {
         Intent inteVerVisita = new Intent(this, ListaVisitasActivity.class);
         startActivity(inteVerVisita);
     }

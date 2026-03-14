@@ -9,6 +9,7 @@
     <!--  Menú del activity main  -->
     <string name="am_op1"> 1. Nueva visita</string>
     <string name="am_op2"> 2. Bitácora de visitas</string>
+    <string name="am_op3"> 3. Exportar imágenes</string>
     <string name="tituloVersion">"Versión: "</string>
     <string name="tituloNuevaVisita">Nueva visita</string>
 
@@ -52,6 +53,12 @@
     <string name="borrar_registro">Borrar registro</string>
     <string name="enviar_whatsapp">Enviar WhatsApp</string>
     <string name="ver_en_maps">Ver en Maps</string>
+    <string name="hoy">Hoy</string>
+    <string name="fecha">Fecha</string>
+    <string name="mes">Mes</string>
+    <string name="ano">Año</string>
+    <string name="todo">Todo</string>
+    <string name="exportar_excel">Exportar Excel</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
@@ -98,6 +105,7 @@
     <!-- Spinner: Nombre de Censadores -->
     <string-array name="nombCensadores">
         <item>Seleccionar</item>
+        <item>Nelson Andrés Acuña Cambronero</item>
         <item>Erick Sánchez</item>
         <item>Jesús Jiménez</item>
         <item>Maria de los Ángeles</item>
@@ -112,7 +120,6 @@
         <item>Pedro Josué Argüello Larios</item>
         <item>Francisco Armando Aguilar Vasconcelo</item>
         <item>Rodrigo Agüero Cerdas</item>
-        <item>Nelson Andrés Acuña Cambronero</item>
         <item>Wiston Cornejo</item>
         <item>Joel Ruíz</item>
         <item>Pedro Morales Cubillo</item>
@@ -130,6 +137,7 @@
         <item>Soda</item>
         <item>Comida rápida</item>
         <item>Comida china</item>
+        <item>Cevichera</item>
         <item>Pizzería</item>
         <item>Food Truck</item>
         <item>Carnicería/Pescadería</item>
@@ -138,13 +146,13 @@
         <item>Bar</item>
         <item>Bar/Restaurante</item>
         <item>Panadería/Pastelería</item>
+        <item>Gimnasio</item>
         <item>Ferretería</item>
         <item>Farmacia</item>
         <item>Hotel</item>
         <item>Cabinas</item>
         <item>Librería/Papelería</item>
         <item>Taller mecánico</item>
-        <item>Gimnasio</item>
     </string-array>
 
 </resources>

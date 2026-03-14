@@ -212,6 +212,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:autofillHints=""
+                    android:focusable="false"
                     android:hint="@string/camposNulos"
                     android:inputType="text|number"
                     android:minHeight="50dp" />
@@ -241,6 +242,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints=""
+                android:focusable="false"
                 android:hint="@string/camposNulos"
                 android:inputType="textUri"
                 android:minHeight="50dp" />

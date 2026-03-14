@@ -29,7 +29,7 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
@@ -59,24 +59,25 @@
                 android:id="@+id/txtCliente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cliente"/>
+                android:text="@string/cliente" />
 
             <TextView
                 android:id="@+id/txtTelefono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/telefono"/>
+                android:text="@string/telefono" />
+
             <TextView
                 android:id="@+id/txtDiaVisita"
-                android:text="@string/dia_visita"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/dia_visita" />
 
             <TextView
                 android:id="@+id/txtCoordenadas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lat_lng"/>
+                android:text="@string/lat_lng" />
 
         </LinearLayout>
 

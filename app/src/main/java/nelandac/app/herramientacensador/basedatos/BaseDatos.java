@@ -8,9 +8,10 @@ import androidx.annotation.Nullable;
 
 public class BaseDatos extends SQLiteOpenHelper {
 
-    ///Atributos de la Base de Datos
+    /// Atributos de la Base de Datos
     public static int dataBaseVersion = 1;
     public static String dataBaseName = "DataBaseHCensador";
+
     public BaseDatos(@Nullable Context context) {
         super(context, dataBaseName, null, dataBaseVersion);
     }

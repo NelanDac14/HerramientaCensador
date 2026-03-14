@@ -9,8 +9,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.*;
+
 import nelandac.app.herramientacensador.basedatos.BaseDatos;
-import nelandac.app.herramientacensador.modelos.Visita;
 
 public class VisitaDAO {
 
@@ -115,7 +116,7 @@ public class VisitaDAO {
 
         int resultado = db.delete("visitas", "id=?", new String[]{String.valueOf(id)});
 
-        Log.d("SQL_DELETE","Filas borradas: " +
+        Log.d("SQL_DELETE", "Filas borradas: " +
                 db.delete("visitas", "id = ?", new String[]{String.valueOf(id)}));
 
         db.close();
@@ -148,7 +149,7 @@ public class VisitaDAO {
         return resultado;
     }
 
-    public List<Visita> obtenerVisitas(){
+    public List<Visita> obtenerVisitas() {
 
         List<Visita> lista = new ArrayList<>();
 
@@ -156,9 +157,9 @@ public class VisitaDAO {
 
         Cursor cursor = db.rawQuery("SELECT * FROM visitas", null);
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
-            do{
+            do {
 
                 Visita v = new Visita();
 
@@ -173,7 +174,7 @@ public class VisitaDAO {
 
                 lista.add(v);
 
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
@@ -182,7 +183,7 @@ public class VisitaDAO {
         return lista;
     }
 
-    public List<Visita> obtenerVisitasPorFecha(String fecha){
+    public List<Visita> obtenerVisitasPorFecha(String fecha) {
 
         List<Visita> lista = new ArrayList<>();
 
@@ -192,9 +193,9 @@ public class VisitaDAO {
                 "SELECT * FROM visitas WHERE fecha_coordinada = ? ORDER BY id",
                 new String[]{fecha});
 
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
 
-            do{
+            do {
 
                 Visita v = new Visita();
 
@@ -205,10 +206,199 @@ public class VisitaDAO {
 
                 lista.add(v);
 
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
 
         cursor.close();
+
+        return lista;
+    }
+
+    public List<Visita> obtenerHoy() {
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE DATE(fecha_registro) = DATE('now','localtime')",
+                null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                Visita v = new Visita();
+
+                v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                v.setPais(cursor.getString(cursor.getColumnIndexOrThrow("pais")));
+                v.setProspector(cursor.getString(cursor.getColumnIndexOrThrow("prospector")));
+                v.setTipoCliente(cursor.getString(cursor.getColumnIndexOrThrow("tipo_cliente")));
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+                v.setTipoIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("tipo_identificacion")));
+                v.setNumeroIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("numero_identificacion")));
+                v.setCoordenadas(cursor.getString(cursor.getColumnIndexOrThrow("coordenadas")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+                v.setClasificacionNegocio(cursor.getString(cursor.getColumnIndexOrThrow("clasificacion_negocio")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setLinkGoogleMaps(cursor.getString(cursor.getColumnIndexOrThrow("link_google_maps")));
+                v.setModulo(cursor.getString(cursor.getColumnIndexOrThrow("modulo")));
+                v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+                v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+                v.setSolicitaApoyoSupervisor(cursor.getString(cursor.getColumnIndexOrThrow("solicita_apoyo_supervisor")));
+                v.setFechaCoordinada(cursor.getString(cursor.getColumnIndexOrThrow("fecha_coordinada")));
+                v.setClienteConVenta(cursor.getString(cursor.getColumnIndexOrThrow("cliente_con_venta")));
+                v.setClienteNuevo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_nuevo")));
+                v.setClienteTieneCodigo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_tiene_codigo")));
+                v.setFechaRegistro(cursor.getString(cursor.getColumnIndexOrThrow("fecha_registro")));
+
+                lista.add(v);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
+    public List<Visita> obtenerPorFecha(String fecha) {
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE date(fecha_registro) = ?",
+                new String[]{fecha}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                Visita v = new Visita();
+
+                v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+                v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+
+                lista.add(v);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
+    public List<Visita> obtenerPorMes(String mes) {
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE strftime('%m', fecha_registro) = ?",
+                new String[]{mes}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                Visita v = new Visita();
+
+                v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                v.setPais(cursor.getString(cursor.getColumnIndexOrThrow("pais")));
+                v.setProspector(cursor.getString(cursor.getColumnIndexOrThrow("prospector")));
+                v.setTipoCliente(cursor.getString(cursor.getColumnIndexOrThrow("tipo_cliente")));
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+                v.setTipoIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("tipo_identificacion")));
+                v.setNumeroIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("numero_identificacion")));
+                v.setCoordenadas(cursor.getString(cursor.getColumnIndexOrThrow("coordenadas")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+                v.setClasificacionNegocio(cursor.getString(cursor.getColumnIndexOrThrow("clasificacion_negocio")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setLinkGoogleMaps(cursor.getString(cursor.getColumnIndexOrThrow("link_google_maps")));
+                v.setModulo(cursor.getString(cursor.getColumnIndexOrThrow("modulo")));
+                v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+                v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+                v.setSolicitaApoyoSupervisor(cursor.getString(cursor.getColumnIndexOrThrow("solicita_apoyo_supervisor")));
+                v.setFechaCoordinada(cursor.getString(cursor.getColumnIndexOrThrow("fecha_coordinada")));
+                v.setClienteConVenta(cursor.getString(cursor.getColumnIndexOrThrow("cliente_con_venta")));
+                v.setClienteNuevo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_nuevo")));
+                v.setClienteTieneCodigo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_tiene_codigo")));
+                v.setFechaRegistro(cursor.getString(cursor.getColumnIndexOrThrow("fecha_registro")));
+
+                lista.add(v);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
+    public List<Visita> obtenerPorAnio(String anio) {
+
+        List<Visita> lista = new ArrayList<>();
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE strftime('%Y', fecha_registro) = ?",
+                new String[]{anio}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                Visita v = new Visita();
+
+                v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+                v.setPais(cursor.getString(cursor.getColumnIndexOrThrow("pais")));
+                v.setProspector(cursor.getString(cursor.getColumnIndexOrThrow("prospector")));
+                v.setTipoCliente(cursor.getString(cursor.getColumnIndexOrThrow("tipo_cliente")));
+                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+                v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+                v.setTipoIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("tipo_identificacion")));
+                v.setNumeroIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("numero_identificacion")));
+                v.setCoordenadas(cursor.getString(cursor.getColumnIndexOrThrow("coordenadas")));
+                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+                v.setClasificacionNegocio(cursor.getString(cursor.getColumnIndexOrThrow("clasificacion_negocio")));
+                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+                v.setLinkGoogleMaps(cursor.getString(cursor.getColumnIndexOrThrow("link_google_maps")));
+                v.setModulo(cursor.getString(cursor.getColumnIndexOrThrow("modulo")));
+                v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+                v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+                v.setSolicitaApoyoSupervisor(cursor.getString(cursor.getColumnIndexOrThrow("solicita_apoyo_supervisor")));
+                v.setFechaCoordinada(cursor.getString(cursor.getColumnIndexOrThrow("fecha_coordinada")));
+                v.setClienteConVenta(cursor.getString(cursor.getColumnIndexOrThrow("cliente_con_venta")));
+                v.setClienteNuevo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_nuevo")));
+                v.setClienteTieneCodigo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_tiene_codigo")));
+                v.setFechaRegistro(cursor.getString(cursor.getColumnIndexOrThrow("fecha_registro")));
+
+                lista.add(v);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
 
         return lista;
     }

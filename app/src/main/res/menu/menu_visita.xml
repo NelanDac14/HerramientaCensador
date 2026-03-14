@@ -3,18 +3,18 @@
 
     <item
         android:id="@+id/menuEditar"
-        android:title="@string/editar_registro"/>
+        android:title="@string/editar_registro" />
 
     <item
         android:id="@+id/menuBorrar"
-        android:title="@string/borrar_registro"/>
+        android:title="@string/borrar_registro" />
 
     <item
         android:id="@+id/menuWhatsapp"
-        android:title="@string/enviar_whatsapp"/>
+        android:title="@string/enviar_whatsapp" />
 
     <item
         android:id="@+id/menuMaps"
-        android:title="@string/ver_en_maps"/>
+        android:title="@string/ver_en_maps" />
 
 </menu>
