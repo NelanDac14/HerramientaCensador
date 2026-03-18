@@ -49,12 +49,17 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+
             <Spinner
                 android:id="@+id/spinPaises"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/nombPaises"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Prospector encargado-->
             <TextView
@@ -69,8 +74,12 @@
                 android:id="@+id/spinProspector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/nombCensadores"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Tipo de cliente-->
             <TextView
@@ -85,44 +94,58 @@
                 android:id="@+id/spinTipCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/tipoCliente"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Nombre Comercial-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNombComercial"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titNombreComercial"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titNombreComercial"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtNombComercial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="name"
-                android:hint="@string/camposNulos"
-                android:inputType="text"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtNombComercial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Nombre del cliente-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNombCliente"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titNombreCompleto"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titNombreCompleto"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtNombCliente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="name"
-                android:hint="@string/camposNulos"
-                android:inputType="textPersonName"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtNombCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="textPersonName" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Tipo de identificación-->
             <TextView
@@ -137,26 +160,35 @@
                 android:id="@+id/spinTipoId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/tipoIdentificacion"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Número de Identificación-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilIdCliente"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titNumIndentificacion"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titNumIndentificacion"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtIdCliente"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="name"
-                android:hint="@string/camposNulos"
-                android:inputType="number"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtIdCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Clasificación de negocios-->
             <TextView
@@ -171,99 +203,131 @@
                 android:id="@+id/spinClasNegocio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/tipoComercio"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Teléfono de contacto-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTelefono"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titTelefono"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titTelefono"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtTelefono"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints="phone"
-                android:hint="@string/camposNulos"
-                android:inputType="phone"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="phone" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Dirección en coordenadas-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/titCoordeDireccion"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/edtCoordenadas"
-                    android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
                     android:layout_weight="1"
-                    android:autofillHints=""
-                    android:focusable="false"
-                    android:hint="@string/camposNulos"
-                    android:inputType="text|number"
-                    android:minHeight="50dp" />
+                    android:hint="@string/titCoordeDireccion"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="#006F84">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtCoordenadas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:focusable="false" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!--Botón de Obtener coordenadas-->
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnNVObtCoordenadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:layout_weight="0"
-                    android:minHeight="50dp"
-                    android:text="@string/btnObtener" />
+                    android:text="@string/btnObtener"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#006F84"
+                    app:cornerRadius="16dp"
+                    app:elevation="6dp"
+                    app:rippleColor="#33FFFFFF" />
+
             </LinearLayout>
 
             <!--Link de Google Maps-->
-
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilLinkGoogle"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titLinkGoogleMaps"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titLinkGoogleMaps"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtLinkGoogle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:focusable="false"
-                android:hint="@string/camposNulos"
-                android:inputType="textUri"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtLinkGoogle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:focusable="false"
+                    android:inputType="textUri" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Módulo-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilModulo"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titModulo"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titModulo"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtModuloVisita"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="@string/camposNulos"
-                android:inputType="number"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtModuloVisita"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Foto del comercio-->
             <LinearLayout
@@ -289,24 +353,48 @@
                     android:contentDescription="@string/foto_comercio"
                     android:scaleType="centerCrop" />
 
-                <EditText
-                    android:id="@+id/edtFotoComercio"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFotoComercio"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="6dp"
-                    android:autofillHints=""
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:hint="@string/ruta_de_la_foto"
-                    android:inputType="text"
-                    android:minHeight="50dp" />
+                    android:layout_marginEnd="12dp"
+                    android:hint="@string/titFotoNegocio"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeColor="#006F84">
 
-                <Button
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edtFotoComercio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTomarFoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/tomar_foto_del_comercio" />
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:text="@string/tomar_foto_del_comercio"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#006F84"
+                    app:cornerRadius="16dp"
+                    app:elevation="6dp"
+                    app:rippleColor="#33FFFFFF" />
 
             </LinearLayout>
 
@@ -323,8 +411,12 @@
                 android:id="@+id/spinDiaVisita"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/diaSemana"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Apoyo del supervisor-->
             <TextView
@@ -339,26 +431,35 @@
                 android:id="@+id/spinSolicApoyo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/opcSiNo"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Fecha de visita coordinada-->
-            <TextView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFecha"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/titFecha"
-                android:textColor="#006F84"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_margin="12dp"
+                android:hint="@string/titFecha"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxStrokeColor="#006F84">
 
-            <EditText
-                android:id="@+id/edtFechaApoyo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:autofillHints=""
-                android:hint="@string/camposNulos"
-                android:inputType="date"
-                android:minHeight="50dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtFechaApoyo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:inputType="date" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!--Cliente con venta-->
             <TextView
@@ -373,8 +474,12 @@
                 android:id="@+id/spinClieVenta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/opcSiNo"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Cliente nuevo-->
             <TextView
@@ -389,8 +494,12 @@
                 android:id="@+id/spinClieNuevo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/opcSiNo"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Cliente código-->
             <TextView
@@ -405,16 +514,29 @@
                 android:id="@+id/spinClieCodigo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@drawable/spinner_primary"
                 android:entries="@array/opcSiNo"
-                android:minHeight="50dp" />
+                android:minHeight="50dp"
+                android:padding="12dp"
+                android:popupBackground="#FFFFFF" />
 
             <!--Botón de guardado-->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNVGuardar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="50dp"
-                android:text="@string/btnGuardar" />
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:text="@string/btnGuardar"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="#006F84"
+                app:cornerRadius="16dp"
+                app:elevation="6dp"
+                app:rippleColor="#33FFFFFF" />
         </LinearLayout>
     </ScrollView>
 

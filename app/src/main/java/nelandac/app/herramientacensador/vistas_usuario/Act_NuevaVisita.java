@@ -43,6 +43,7 @@ import java.util.Locale;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.textfield.TextInputEditText;
 
 import nelandac.app.herramientacensador.R;
 import nelandac.app.herramientacensador.modelos.Visita;
@@ -55,7 +56,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
             spinTipIdentificacion, spinClasComercio, spinDiaVisita,
             spinApoySupervisor, spinVenta, spinClieNuevo, spinCodigo;
 
-    private EditText txvNombComercial, txvNombCliente, txvNumIdentificacion,
+    private TextInputEditText txvNombComercial, txvNombCliente, txvNumIdentificacion,
             txvCoordenadas, txvNumTelefono, txvLinkGoogle, txvModulo,
             txvFotoComercio, txvFechaSupervisor;
 

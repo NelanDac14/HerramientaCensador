@@ -3,4 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="toolbarColor">#006F84</color>
+    <color name="primary">#006F84</color>
+    <color name="primary_dark">#004F5C</color>
+    <color name="gray_hint">#9E9E9E</color>
+    <color name="stroke_default">#DADADA</color>
 </resources>
