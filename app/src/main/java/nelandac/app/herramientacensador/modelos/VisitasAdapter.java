@@ -27,10 +27,16 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
 
     private List<Visita> lista;
     private Context context;
+    public interface OnItemActionListener {
+        void onEditar(Visita visita, int position);
+    }
 
-    public VisitasAdapter(Context context, List<Visita> lista) {
+    private OnItemActionListener listener;
+
+    public VisitasAdapter(Context context, List<Visita> lista, OnItemActionListener listener) {
         this.context = context;
         this.lista = lista;
+        this.listener = listener;
     }
 
     @NonNull
@@ -78,7 +84,9 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
                 int id = item.getItemId();
 
                 if (id == R.id.menuEditar) {
-                    editarRegistro(visita);
+                    if (listener != null) {
+                        listener.onEditar(visita, holder.getAdapterPosition());
+                    }
                     return true;
                 }
 
@@ -164,16 +172,6 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
-
-        context.startActivity(intent);
-    }
-
-    //Función para editar un registro de visita
-    private void editarRegistro(Visita visita) {
-
-        Intent intent = new Intent(context, Act_NuevaVisita.class);
-
-        intent.putExtra("VISITA_ID", visita.getId());
 
         context.startActivity(intent);
     }

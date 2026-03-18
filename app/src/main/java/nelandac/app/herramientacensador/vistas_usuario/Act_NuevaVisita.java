@@ -1,5 +1,6 @@
 package nelandac.app.herramientacensador.vistas_usuario;
 
+import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.util.Log;
@@ -68,6 +69,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
     private String rutaFotoActual;
     private ActivityResultLauncher<Uri> cameraLauncher;
     private int visitaId = -1;
+    private int position = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         iniVistas();
         initListeners();
         visitaId = getIntent().getIntExtra("VISITA_ID", -1);
+        position = getIntent().getIntExtra("POSITION", -1);
 
         if (visitaId != -1) {
             cargarDatos(visitaId);
@@ -282,8 +285,16 @@ public class Act_NuevaVisita extends AppCompatActivity {
             int filas = visitaDAO.updateVisita(visita);
 
             if (filas > 0) {
+
                 Toast.makeText(this, "Visita actualizada", Toast.LENGTH_LONG).show();
-                finish(); // regresar
+
+                Intent data = new Intent();
+                data.putExtra("VISITA_ID", visitaId);
+                data.putExtra("POSITION", position);
+
+                setResult(RESULT_OK, data);
+
+                finish();
             } else {
                 Toast.makeText(this, "Error al actualizar", Toast.LENGTH_LONG).show();
             }
@@ -449,6 +460,9 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
             txvNombComercial.setText(v.getNombreComercial());
             txvNombCliente.setText(v.getNombreCliente());
+
+            spinTipIdentificacion.setSelection(getIndex(spinTipIdentificacion, v.getTipoIdentificacion()));
+
             txvNumIdentificacion.setText(v.getNumeroIdentificacion());
             txvCoordenadas.setText(v.getCoordenadas());
             txvNumTelefono.setText(v.getTelefono());

@@ -12,6 +12,8 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,11 +47,33 @@ public class ListaVisitasActivity extends AppCompatActivity {
     VisitasAdapter adapter;
     List<Visita> lista;
     Chip chipHoy, chipFecha, chipMes, chipAnio, chipTodo;
+    ActivityResultLauncher<Intent> launcherEditar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_visitas);
+
+        launcherEditar = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+                        int position = result.getData().getIntExtra("POSITION", -1);
+                        int id = result.getData().getIntExtra("VISITA_ID", -1);
+
+                        if (position != -1) {
+
+                            VisitaDAO dao = new VisitaDAO(this);
+                            Visita visitaActualizada = dao.getVisitaById(id);
+
+                            lista.set(position, visitaActualizada);
+                            adapter.notifyItemChanged(position);
+                        }
+                    }
+                }
+        );
 
         recyclerVisitas = findViewById(R.id.recyclerVisitas);
         chipHoy = findViewById(R.id.chipHoy);
@@ -120,10 +144,9 @@ public class ListaVisitasActivity extends AppCompatActivity {
 
             String mes = String.format("%02d", mesNumero);
 
-            lista = dao.obtenerPorMes(mes);
-
-            adapter = new VisitasAdapter(this, lista);
-            recyclerVisitas.setAdapter(adapter);
+            lista.clear();
+            lista.addAll(dao.obtenerPorMes(mes));
+            adapter.notifyDataSetChanged();
 
         });
 
@@ -133,16 +156,22 @@ public class ListaVisitasActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             String anio = String.valueOf(calendar.get(Calendar.YEAR));
 
-            lista = dao.obtenerPorAnio(anio);
-
-            adapter = new VisitasAdapter(this, lista);
-            recyclerVisitas.setAdapter(adapter);
+            lista.clear();
+            lista.addAll(dao.obtenerPorAnio(anio));
+            adapter.notifyDataSetChanged();
 
         });
 
         fabExportar.setOnClickListener(v -> exportarExcel());
 
-        adapter = new VisitasAdapter(this, lista);
+        adapter = new VisitasAdapter(this, lista, (visita, position) -> {
+
+            Intent intent = new Intent(this, Act_NuevaVisita.class);
+            intent.putExtra("VISITA_ID", visita.getId());
+            intent.putExtra("POSITION", position);
+
+            launcherEditar.launch(intent);
+        });
 
         recyclerVisitas.setAdapter(adapter);
     }
