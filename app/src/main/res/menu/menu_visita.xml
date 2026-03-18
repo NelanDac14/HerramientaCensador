@@ -17,4 +17,14 @@
         android:id="@+id/menuMaps"
         android:title="@string/ver_en_maps" />
 
+    <item
+        android:id="@+id/menuCopiar"
+        android:title="@string/copiar_informacion"
+        android:icon="@drawable/ic_copy" />
+
+    <item
+        android:id="@+id/menuCompartir"
+        android:title="@string/compartir"
+        android:icon="@android:drawable/ic_menu_share" />
+
 </menu>

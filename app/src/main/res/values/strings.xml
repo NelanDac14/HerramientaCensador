@@ -59,6 +59,8 @@
     <string name="ano">Año</string>
     <string name="todo">Todo</string>
     <string name="exportar_excel">Exportar Excel</string>
+    <string name="copiar_informacion">Copiar información</string>
+    <string name="compartir">Compartir</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

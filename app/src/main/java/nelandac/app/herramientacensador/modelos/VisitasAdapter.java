@@ -97,6 +97,19 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
                     return true;
                 }
 
+                if (id == R.id.menuCopiar) {
+                    String info = construirTexto(visita);
+                    copiarAlPortapapeles(info);
+                    Toast.makeText(context, "Información copiada", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                if (id == R.id.menuCompartir) {
+                    String info = construirTexto(visita);
+                    compartirTexto(info);
+                    return true;
+                }
+
                 return false;
             });
 
@@ -192,6 +205,38 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
                 .setNegativeButton("Cancelar", null)
 
                 .show();
+    }
+
+    private String construirTexto(Visita v) {
+
+        String linkMaps = "https://maps.google.com/?q=" +
+                v.getLatitud() + "," + v.getLongitud();
+
+        return "📍 *INFORMACIÓN DE VISITA COMERCIAL*\n\n" +
+                "🏪 *Nombre:* " + v.getNombreComercial() + "\n" +
+                "👤 *Cliente:* " + v.getNombreCliente() + "\n" +
+                "📞 *Tel:* " + v.getTelefono() + "\n" +
+                "📅 *Día:* " + v.getDiaVisita() + "\n\n" +
+                "📌 *Ubicación:*\n" + linkMaps;
+    }
+
+    private void copiarAlPortapapeles(String texto) {
+        android.content.ClipboardManager clipboard =
+                (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+        android.content.ClipData clip =
+                android.content.ClipData.newPlainText("visita", texto);
+
+        clipboard.setPrimaryClip(clip);
+    }
+
+    private void compartirTexto(String texto) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, texto);
+
+        context.startActivity(Intent.createChooser(intent, "Compartir vía"));
     }
 
 
