@@ -116,8 +116,7 @@ public class VisitaDAO {
 
         int resultado = db.delete("visitas", "id=?", new String[]{String.valueOf(id)});
 
-        Log.d("SQL_DELETE", "Filas borradas: " +
-                db.delete("visitas", "id = ?", new String[]{String.valueOf(id)}));
+        Log.d("SQL_DELETE", "Filas borradas: " + resultado);
 
         db.close();
 
@@ -136,6 +135,23 @@ public class VisitaDAO {
         values.put("tipo_cliente", visita.getTipoCliente());
         values.put("nombre_comercial", visita.getNombreComercial());
         values.put("nombre_cliente", visita.getNombreCliente());
+        values.put("tipo_identificacion", visita.getTipoIdentificacion());
+        values.put("numero_identificacion", visita.getNumeroIdentificacion());
+        values.put("coordenadas", visita.getCoordenadas());
+        values.put("latitud", visita.getLatitud());
+        values.put("longitud", visita.getLongitud());
+        values.put("clasificacion_negocio", visita.getClasificacionNegocio());
+        values.put("telefono", visita.getTelefono());
+        values.put("link_google_maps", visita.getLinkGoogleMaps());
+        values.put("modulo", visita.getModulo());
+        values.put("foto_negocio", visita.getFotoNegocio());
+        values.put("dia_visita", visita.getDiaVisita());
+        values.put("solicita_apoyo_supervisor", visita.getSolicitaApoyoSupervisor());
+        values.put("fecha_coordinada", visita.getFechaCoordinada());
+        values.put("cliente_con_venta", visita.getClienteConVenta());
+        values.put("cliente_nuevo", visita.getClienteNuevo());
+        values.put("cliente_tiene_codigo", visita.getClienteTieneCodigo());
+        values.put("estado_sync", visita.getEstadoSync());
 
         int resultado = db.update(
                 "visitas",
@@ -183,35 +199,51 @@ public class VisitaDAO {
         return lista;
     }
 
-    public List<Visita> obtenerVisitasPorFecha(String fecha) {
-
-        List<Visita> lista = new ArrayList<>();
+    public Visita getVisitaById(int id) {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM visitas WHERE fecha_coordinada = ? ORDER BY id",
-                new String[]{fecha});
+                "SELECT * FROM visitas WHERE id = ?",
+                new String[]{String.valueOf(id)}
+        );
+
+        Visita v = null;
 
         if (cursor.moveToFirst()) {
 
-            do {
+            v = new Visita();
 
-                Visita v = new Visita();
+            v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            v.setPais(cursor.getString(cursor.getColumnIndexOrThrow("pais")));
+            v.setProspector(cursor.getString(cursor.getColumnIndexOrThrow("prospector")));
+            v.setTipoCliente(cursor.getString(cursor.getColumnIndexOrThrow("tipo_cliente")));
+            v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
+            v.setNombreCliente(cursor.getString(cursor.getColumnIndexOrThrow("nombre_cliente")));
+            v.setTipoIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("tipo_identificacion")));
+            v.setNumeroIdentificacion(cursor.getString(cursor.getColumnIndexOrThrow("numero_identificacion")));
+            v.setCoordenadas(cursor.getString(cursor.getColumnIndexOrThrow("coordenadas")));
+            v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
+            v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
+            v.setClasificacionNegocio(cursor.getString(cursor.getColumnIndexOrThrow("clasificacion_negocio")));
+            v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
+            v.setLinkGoogleMaps(cursor.getString(cursor.getColumnIndexOrThrow("link_google_maps")));
+            v.setModulo(cursor.getString(cursor.getColumnIndexOrThrow("modulo")));
+            v.setFotoNegocio(cursor.getString(cursor.getColumnIndexOrThrow("foto_negocio")));
+            v.setDiaVisita(cursor.getString(cursor.getColumnIndexOrThrow("dia_visita")));
+            v.setSolicitaApoyoSupervisor(cursor.getString(cursor.getColumnIndexOrThrow("solicita_apoyo_supervisor")));
+            v.setFechaCoordinada(cursor.getString(cursor.getColumnIndexOrThrow("fecha_coordinada")));
+            v.setClienteConVenta(cursor.getString(cursor.getColumnIndexOrThrow("cliente_con_venta")));
+            v.setClienteNuevo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_nuevo")));
+            v.setClienteTieneCodigo(cursor.getString(cursor.getColumnIndexOrThrow("cliente_tiene_codigo")));
+            v.setEstadoSync(cursor.getInt(cursor.getColumnIndexOrThrow("estado_sync")));
 
-                v.setNombreComercial(cursor.getString(cursor.getColumnIndexOrThrow("nombre_comercial")));
-                v.setTelefono(cursor.getString(cursor.getColumnIndexOrThrow("telefono")));
-                v.setLatitud(cursor.getDouble(cursor.getColumnIndexOrThrow("latitud")));
-                v.setLongitud(cursor.getDouble(cursor.getColumnIndexOrThrow("longitud")));
-
-                lista.add(v);
-
-            } while (cursor.moveToNext());
         }
 
         cursor.close();
+        db.close();
 
-        return lista;
+        return v;
     }
 
     public List<Visita> obtenerHoy() {

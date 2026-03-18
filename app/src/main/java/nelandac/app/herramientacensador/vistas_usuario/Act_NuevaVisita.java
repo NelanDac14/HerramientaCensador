@@ -67,6 +67,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
     private Uri photoUri;
     private String rutaFotoActual;
     private ActivityResultLauncher<Uri> cameraLauncher;
+    private int visitaId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,12 @@ public class Act_NuevaVisita extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         iniVistas();
         initListeners();
+        visitaId = getIntent().getIntExtra("VISITA_ID", -1);
+
+        if (visitaId != -1) {
+            cargarDatos(visitaId);
+            btnGuardar.setText("Actualizar"); // UX PRO 🔥
+        }
         //Iniciamos el launcher de la cámara
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
@@ -260,33 +267,39 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     private void guardarVisita() {
 
-        /*Primero validamos que todos los espacios estén debidamente
-        llenos*/
         if (!validarCamposVisita()) {
             return;
         }
 
         Visita visita = obtenerDatosFormulario();
-
         VisitaDAO visitaDAO = new VisitaDAO(this);
 
-        long resultado = visitaDAO.insertVisita(visita);
+        if (visitaId != -1) {
 
-        if (resultado > 0) {
+            // MODO EDICIÓN
+            visita.setId(visitaId);
 
-            Toast.makeText(this,
-                    "Visita registrada correctamente",
-                    Toast.LENGTH_LONG).show();
-            //Limpia la vista
-            limpiarFormulario();
+            int filas = visitaDAO.updateVisita(visita);
+
+            if (filas > 0) {
+                Toast.makeText(this, "Visita actualizada", Toast.LENGTH_LONG).show();
+                finish(); // regresar
+            } else {
+                Toast.makeText(this, "Error al actualizar", Toast.LENGTH_LONG).show();
+            }
 
         } else {
 
-            Toast.makeText(this,
-                    "Error al registrar la visita",
-                    Toast.LENGTH_LONG).show();
-        }
+            // 🆕 MODO NUEVO
+            long resultado = visitaDAO.insertVisita(visita);
 
+            if (resultado > 0) {
+                Toast.makeText(this, "Visita registrada correctamente", Toast.LENGTH_LONG).show();
+                limpiarFormulario();
+            } else {
+                Toast.makeText(this, "Error al registrar la visita", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private Visita obtenerDatosFormulario() {
@@ -422,5 +435,49 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
         // Limpiar ruta de foto
         rutaFotoActual = null;
+    }
+    private void cargarDatos(int id) {
+
+        VisitaDAO dao = new VisitaDAO(this);
+        Visita v = dao.getVisitaById(id);
+
+        if (v != null) {
+
+            spinPais.setSelection(getIndex(spinPais, v.getPais()));
+            spinProspector.setSelection(getIndex(spinProspector, v.getProspector()));
+            spinTipoCliente.setSelection(getIndex(spinTipoCliente, v.getTipoCliente()));
+
+            txvNombComercial.setText(v.getNombreComercial());
+            txvNombCliente.setText(v.getNombreCliente());
+            txvNumIdentificacion.setText(v.getNumeroIdentificacion());
+            txvCoordenadas.setText(v.getCoordenadas());
+            txvNumTelefono.setText(v.getTelefono());
+            txvLinkGoogle.setText(v.getLinkGoogleMaps());
+            txvModulo.setText(v.getModulo());
+            txvFotoComercio.setText(v.getFotoNegocio());
+            txvFechaSupervisor.setText(v.getFechaCoordinada());
+
+            spinClasComercio.setSelection(getIndex(spinClasComercio, v.getClasificacionNegocio()));
+            spinDiaVisita.setSelection(getIndex(spinDiaVisita, v.getDiaVisita()));
+            spinApoySupervisor.setSelection(getIndex(spinApoySupervisor, v.getSolicitaApoyoSupervisor()));
+            spinVenta.setSelection(getIndex(spinVenta, v.getClienteConVenta()));
+            spinClieNuevo.setSelection(getIndex(spinClieNuevo, v.getClienteNuevo()));
+            spinCodigo.setSelection(getIndex(spinCodigo, v.getClienteTieneCodigo()));
+
+            // Imagen
+            if (v.getFotoNegocio() != null && !v.getFotoNegocio().isEmpty()) {
+                Uri uri = Uri.fromFile(new File(v.getFotoNegocio()));
+                imgFotoComercio.setImageURI(uri);
+            }
+        }
+    }
+
+    private int getIndex(Spinner spinner, String value) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equals(value)) {
+                return i;
+            }
+        }
+        return 0;
     }
 }
