@@ -22,6 +22,7 @@ import java.util.List;
 
 import nelandac.app.herramientacensador.R;
 import nelandac.app.herramientacensador.vistas_usuario.Act_NuevaVisita;
+import nelandac.app.herramientacensador.vistas_usuario.MapaVisitasActivity;
 
 public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHolder> {
 
@@ -115,6 +116,10 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
                 if (id == R.id.menuCompartir) {
                     String info = construirTexto(visita);
                     compartirTexto(info);
+                    return true;
+                }
+                if (id == R.id.menuMapaItem) {
+                    abrirMapaIndividual(visita);
                     return true;
                 }
 
@@ -237,5 +242,14 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
         context.startActivity(Intent.createChooser(intent, "Compartir vía"));
     }
 
+    private void abrirMapaIndividual(Visita visita) {
 
+        Intent intent = new Intent(context, MapaVisitasActivity.class);
+
+        intent.putExtra("LAT", visita.getLatitud());
+        intent.putExtra("LNG", visita.getLongitud());
+        intent.putExtra("NOMBRE", visita.getNombreComercial());
+
+        context.startActivity(intent);
+    }
 }

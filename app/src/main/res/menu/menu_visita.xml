@@ -15,7 +15,7 @@
 
     <item
         android:id="@+id/menuMaps"
-        android:title="@string/ver_en_maps" />
+        android:title="@string/visitar_ubicacion" />
 
     <item
         android:id="@+id/menuCopiar"
@@ -26,5 +26,9 @@
         android:id="@+id/menuCompartir"
         android:title="@string/compartir"
         android:icon="@android:drawable/ic_menu_share" />
+    <item
+        android:id="@+id/menuMapaItem"
+        android:title="@string/ver_en_maps"
+        android:icon="@android:drawable/ic_dialog_map" />
 
 </menu>

@@ -52,7 +52,7 @@
     <string name="editar_registro">Editar registro</string>
     <string name="borrar_registro">Borrar registro</string>
     <string name="enviar_whatsapp">Enviar WhatsApp</string>
-    <string name="ver_en_maps">Ver en Maps</string>
+    <string name="ver_en_maps">Ver en el Mapa</string>
     <string name="hoy">Hoy</string>
     <string name="fecha">Fecha</string>
     <string name="mes">Mes</string>
@@ -62,6 +62,7 @@
     <string name="copiar_informacion">Copiar información</string>
     <string name="compartir">Compartir</string>
     <string name="ver_mapa">Ver mapa</string>
+    <string name="visitar_ubicacion">Visitar ubicación</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
