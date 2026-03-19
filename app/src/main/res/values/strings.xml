@@ -61,6 +61,7 @@
     <string name="exportar_excel">Exportar Excel</string>
     <string name="copiar_informacion">Copiar información</string>
     <string name="compartir">Compartir</string>
+    <string name="ver_mapa">Ver mapa</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

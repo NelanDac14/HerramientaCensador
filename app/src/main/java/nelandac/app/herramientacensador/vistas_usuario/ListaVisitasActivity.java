@@ -82,6 +82,7 @@ public class ListaVisitasActivity extends AppCompatActivity {
         chipAnio = findViewById(R.id.chipAnio);
         chipTodo = findViewById(R.id.chipTodo);
         FloatingActionButton fabExportar = findViewById(R.id.fabExportarExcel);
+        FloatingActionButton fabMapa = findViewById(R.id.fabMapa);
 
         recyclerVisitas.setLayoutManager(new LinearLayoutManager(this));
 
@@ -163,6 +164,10 @@ public class ListaVisitasActivity extends AppCompatActivity {
         });
 
         fabExportar.setOnClickListener(v -> exportarExcel());
+
+        fabMapa.setOnClickListener(v -> {
+            startActivity(new Intent(this, MapaVisitasActivity.class));
+        });
 
         adapter = new VisitasAdapter(this, lista, (visita, position) -> {
 

@@ -48,4 +48,6 @@ dependencies {
     implementation("com.google.android.material:material:1.13.0")
     implementation("org.apache.poi:poi:5.5.1")
     implementation("org.apache.poi:poi-ooxml:5.5.1")
+    implementation("com.google.android.gms:play-services-maps:20.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
