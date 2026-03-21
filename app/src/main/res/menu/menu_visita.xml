@@ -1,31 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Menú: menu_visita.xml
+    Responsabilidad: Define las acciones contextuales disponibles para cada item de visita en el listado.
+    Estructura: Provee una serie de acciones rápidas (CRUD y servicios externos) que se despliegan
+    mediante un PopupMenu en el VisitasAdapter.
+-->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Acción: Abrir el formulario en modo edición para el registro seleccionado -->
     <item
         android:id="@+id/menuEditar"
         android:title="@string/editar_registro" />
 
+    <!-- Acción: Eliminar permanentemente el registro de la base de datos local -->
     <item
         android:id="@+id/menuBorrar"
         android:title="@string/borrar_registro" />
 
+    <!-- Acción: Iniciar comunicación externa mediante la API de WhatsApp -->
     <item
         android:id="@+id/menuWhatsapp"
         android:title="@string/enviar_whatsapp" />
 
+    <!-- Acción: Iniciar navegación GPS paso a paso mediante Google Maps -->
     <item
         android:id="@+id/menuMaps"
         android:title="@string/visitar_ubicacion" />
 
+    <!-- Acción: Copiar resumen de datos al portapapeles del sistema operativo -->
     <item
         android:id="@+id/menuCopiar"
         android:title="@string/copiar_informacion"
         android:icon="@drawable/ic_copy" />
 
+    <!-- Acción: Compartir información mediante el selector global del sistema -->
     <item
         android:id="@+id/menuCompartir"
         android:title="@string/compartir"
         android:icon="@android:drawable/ic_menu_share" />
+
+    <!-- Acción: Visualizar la ubicación del registro en el mapa interno de la app -->
     <item
         android:id="@+id/menuMapaItem"
         android:title="@string/ver_en_maps"

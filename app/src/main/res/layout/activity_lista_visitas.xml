@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+    Layout: activity_lista_visitas.xml
+    Responsabilidad: Define la interfaz de usuario para la visualización y gestión del historial de visitas.
+    Estructura: Utiliza un ConstraintLayout como base para organizar una barra de filtros dinámica (Chips),
+    un listado de alto rendimiento (RecyclerView) y botones de acción flotantes (FAB) para exportación y mapas.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="787dp">
+    android:layout_height="match_parent">
 
-    <!-- Barra de filtros -->
-
+    <!--
+        Barra de Filtros:
+        Permite al usuario segmentar la información por criterios temporales.
+        Se implementa dentro de un HorizontalScrollView para asegurar la navegabilidad de los filtros
+        en dispositivos con pantallas de dimensiones reducidas.
+    -->
     <HorizontalScrollView
         android:id="@+id/scrollFiltros"
         android:layout_width="0dp"
@@ -18,6 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <!-- Agrupación de filtros mediante Material Chips con selección única -->
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupFiltros"
             android:layout_width="wrap_content"
@@ -64,8 +74,11 @@
 
     </HorizontalScrollView>
 
-    <!-- Lista de visitas -->
-
+    <!--
+        Listado de Visitas:
+        Componente de visualización masiva de datos.
+        Utiliza el patrón de reciclaje de vistas para optimizar el consumo de memoria RAM.
+    -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerVisitas"
         android:layout_width="0dp"
@@ -78,30 +91,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scrollFiltros" />
 
-    <!-- BOTÓN EXPORTAR EXCEL -->
-
+    <!--
+        Botón Flotante: Exportación Excel
+        Provee acceso rápido a la función de generación de reportes .xlsx.
+    -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabExportarExcel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:layout_marginBottom="24dp"
         android:contentDescription="@string/exportar_excel"
         android:src="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!--
+        Botón Flotante: Mapa General
+        Permite la transición hacia la vista geográfica masiva de todos los puntos registrados.
+    -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMapa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="100dp"
         android:contentDescription="@string/ver_mapa"
         android:src="@android:drawable/ic_dialog_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

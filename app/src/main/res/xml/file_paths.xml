@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Configuración: file_paths.xml
+    Responsabilidad: Define las rutas de archivos compartibles mediante el componente FileProvider.
+    Propósito: Permite que la aplicación genere URIs seguras para recursos internos (fotos y documentos)
+    que deben ser leídos por aplicaciones de terceros (Cámara, Visores de PDF/Excel, WhatsApp).
+-->
 <paths>
 
+    <!-- Ruta para documentos exportados (Excel) en el almacenamiento externo privado de la app -->
     <external-files-path
         name="documents"
         path="Documents/" />
 
+    <!-- Ruta para capturas fotográficas temporales y persistentes -->
     <external-files-path
         name="images"
         path="Pictures/" />
 
+    <!-- Acceso a la raíz del almacenamiento externo (necesario para compatibilidad con ciertas apps de cámara) -->
     <external-path
         name="external_files"
         path="." />

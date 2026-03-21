@@ -63,6 +63,8 @@
     <string name="compartir">Compartir</string>
     <string name="ver_mapa">Ver mapa</string>
     <string name="visitar_ubicacion">Visitar ubicación</string>
+    <string name="galeria">Galería</string>
+    <string name="actualizar">Actualizar</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

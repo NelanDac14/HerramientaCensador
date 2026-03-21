@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout: item_visita.xml
+    Responsabilidad: Define la estructura visual de un elemento individual (fila) dentro del listado de visitas.
+    Estructura: Utiliza un CardView para proporcionar elevación y bordes redondeados, mejorando la separación
+    visual entre registros. Organiza la información mediante una combinación de RelativeLayout y LinearLayouts
+    anidados para una disposición clara de textos e imágenes.
+-->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,6 +19,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
+        <!-- Evidencia Fotográfica: Miniatura del comercio capturado -->
         <ImageView
             android:id="@+id/imgFoto"
             android:layout_width="90dp"
@@ -19,6 +28,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background" />
 
+        <!-- Contenedor de Información Textual -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +37,7 @@
             android:paddingStart="10dp"
             android:paddingEnd="0dp">
 
-
+            <!-- Bloque de Título: Índice y Nombre Comercial -->
             <LinearLayout
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -55,6 +65,7 @@
 
             </LinearLayout>
 
+            <!-- Datos Secundarios del Registro -->
             <TextView
                 android:id="@+id/txtCliente"
                 android:layout_width="wrap_content"
@@ -73,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/dia_visita" />
 
+            <!-- Representación de coordenadas geográficas -->
             <TextView
                 android:id="@+id/txtCoordenadas"
                 android:layout_width="wrap_content"
@@ -81,6 +93,7 @@
 
         </LinearLayout>
 
+        <!-- Acceso al Menú Contextual (Overflow) -->
         <ImageView
             android:id="@+id/btnMenu"
             android:layout_width="28dp"

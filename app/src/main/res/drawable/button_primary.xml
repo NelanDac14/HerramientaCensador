@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Selector: button_primary.xml
+    Responsabilidad: Define el aspecto visual y la respuesta táctil de los botones principales de la aplicación.
+    Estructura: Utiliza un elemento 'ripple' para proporcionar retroalimentación visual al usuario (efecto de onda)
+    cumpliendo con las directrices de Material Design.
+-->
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="#33FFFFFF">
 
+    <!-- Definición de la forma base del botón -->
     <item>
         <shape android:shape="rectangle">
+            <!-- Color de fondo sólido representativo de la identidad visual del proyecto -->
             <solid android:color="#006F84"/>
 
+            <!-- Radio de curvatura en las esquinas para una estética moderna y suavizada -->
             <corners android:radius="16dp"/>
 
+            <!-- Márgenes internos para asegurar la correcta disposición del contenido (texto o iconos) -->
             <padding
                 android:left="12dp"
                 android:top="10dp"

@@ -1,33 +1,86 @@
 package nelandac.app.herramientacensador.modelos;
 
+/**
+ * Clase de modelo Visita.
+ * 
+ * Representa la entidad de negocio para un registro de censo o visita comercial.
+ * Esta clase actúa como un Data Transfer Object (DTO) para el transporte de información
+ * entre la interfaz de usuario, la lógica de negocio y la capa de persistencia (SQLite).
+ * Contiene atributos detallados del comercio, ubicación geográfica y estados de control.
+ */
 public class Visita {
 
-
+    // Identificador único del registro en la base de datos
     private int id;
+    
+    // Información contextual de la ubicación y el responsable
     private String pais;
     private String prospector;
     private String tipoCliente;
+    
+    // Datos de identificación del establecimiento y el propietario
     private String nombreComercial;
     private String nombreCliente;
     private String tipoIdentificacion;
     private String numeroIdentificacion;
+    
+    // Datos de geolocalización
     private String coordenadas;
     private double latitud;
     private double longitud;
+    
+    // Información de contacto y clasificación comercial
     private String clasificacionNegocio;
     private String telefono;
     private String linkGoogleMaps;
+    
+    // Información técnica y evidencias
     private String modulo;
     private String fotoNegocio;
+    
+    // Planificación y estados de seguimiento
     private String diaVisita;
     private String solicitaApoyoSupervisor;
     private String fechaCoordinada;
+    
+    // Indicadores de perfilamiento de cliente
     private String clienteConVenta;
     private String clienteNuevo;
     private String clienteTieneCodigo;
+    
+    // Atributos de control de sistema
     private int estadoSync;
     private String fechaRegistro;
 
+    /**
+     * Constructor parametrizado para la instanciación completa de un objeto Visita.
+     * Utilizado principalmente al recuperar registros existentes desde la base de datos.
+     * 
+     * @param id Identificador único
+     * @param pais País de origen
+     * @param prospector Nombre del censador
+     * @param tipoCliente Clasificación del cliente
+     * @param nombreComercial Nombre del establecimiento
+     * @param nombreCliente Nombre del titular
+     * @param tipoIdentificacion Tipo de documento legal
+     * @param numeroIdentificacion Número de documento legal
+     * @param coordenadas Representación String de ubicación (lat,lng)
+     * @param latitud Valor numérico de latitud
+     * @param longitud Valor numérico de longitud
+     * @param clasificacionNegocio Giro del negocio
+     * @param telefono Número de contacto
+     * @param linkGoogleMaps Enlace externo de ubicación
+     * @param modulo Módulo asignado
+     * @param fotoNegocio Ruta local de la evidencia fotográfica
+     * @param diaVisita Día programado
+     * @param solicitaApoyoSupervisor Indicador de requerimiento de supervisión
+     * @param fechaCoordinada Fecha pactada para la visita
+     * @param clienteConVenta Estado de venta actual
+     * @param clienteNuevo Indicador de nuevo registro
+     * @param clienteTieneCodigo Estado de código interno
+     * @param estadoSync Estado de sincronización con el servidor remoto
+     * @param fechaRegistro Marca de tiempo de creación del registro
+     */
     public Visita(int id, String pais, String prospector, String tipoCliente,
                   String nombreComercial, String nombreCliente, String tipoIdentificacion,
                   String numeroIdentificacion, String coordenadas, double latitud,
@@ -62,6 +115,11 @@ public class Visita {
         this.fechaRegistro = fechaRegistro;
     }
 
+    /**
+     * Constructor predeterminado.
+     * Inicializa los atributos con valores por defecto para evitar punteros nulos durante
+     * el proceso de carga de formularios nuevos.
+     */
     public Visita() {
         this.id = 0;
         this.pais = "";
@@ -88,6 +146,9 @@ public class Visita {
         this.estadoSync = 0;
         this.fechaRegistro = "";
     }
+
+    // Métodos de acceso (Getters y Setters)
+    // Implementan la encapsulación de los datos de la clase.
 
     public int getId() {
         return id;

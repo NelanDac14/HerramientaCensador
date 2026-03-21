@@ -1,5 +1,6 @@
 package nelandac.app.herramientacensador.vistas_usuario;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
@@ -19,7 +20,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import android.Manifest;
@@ -50,53 +55,93 @@ import nelandac.app.herramientacensador.R;
 import nelandac.app.herramientacensador.modelos.Visita;
 import nelandac.app.herramientacensador.modelos.VisitaDAO;
 
+/**
+ * Clase Act_NuevaVisita
+ * 
+ * Esta actividad gestiona el ciclo de vida de la creación y edición de registros de visitas.
+ * Implementa funcionalidades críticas como la obtención de geolocalización mediante Google Play Services,
+ * captura de imágenes mediante la cámara del sistema e integración con la galería del dispositivo.
+ * 
+ * La clase sigue un patrón de diseño imperativo para la gestión de la interfaz de usuario (UI)
+ * y utiliza un objeto de acceso a datos (DAO) para la persistencia en una base de datos local SQLite.
+ */
 public class Act_NuevaVisita extends AppCompatActivity {
-    /// Componentes interactivos del Activity
+    
+    // Declaración de componentes de la interfaz de usuario
     private Toolbar toolbar;
+    
+    // Selectores para datos categóricos
     private Spinner spinPais, spinProspector, spinTipoCliente,
             spinTipIdentificacion, spinClasComercio, spinDiaVisita,
             spinApoySupervisor, spinVenta, spinClieNuevo, spinCodigo;
 
+    // Campos de entrada de texto utilizando componentes de Material Design
     private TextInputEditText txvNombComercial, txvNombCliente, txvNumIdentificacion,
             txvCoordenadas, txvNumTelefono, txvLinkGoogle, txvModulo,
             txvFotoComercio, txvFechaSupervisor;
 
+    // Visualización de la imagen capturada o seleccionada
     private ImageView imgFotoComercio;
-    private Button btnObtener, btnGuardar, btnFotoComercio;
+    
+    // Botones de acción principal
+    private Button btnObtener, btnGuardar, btnFotoComercio, btnAgregarFoto;
 
+    // Cliente para servicios de ubicación de Google Play
     private FusedLocationProviderClient fusedLocationClient;
+    
+    // Variables para la gestión de archivos y rutas de imágenes
     private Uri photoUri;
     private String rutaFotoActual;
+    
+    // Lanzadores para resultados de actividades externas (Cámara y Galería)
     private ActivityResultLauncher<Uri> cameraLauncher;
+    private ActivityResultLauncher<String> galeriaLauncher;
+    
+    // Variables de control de estado para el modo edición
     private int visitaId = -1;
     private int position = -1;
 
+    /**
+     * Punto de entrada de la actividad. 
+     * Configura el entorno visual, inicializa servicios y registra los callbacks de los ActivityResultLaunchers.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Habilitación de renderizado de borde a borde para una experiencia visual inmersiva
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_act_nueva_visita);
+        
+        // Inicialización del cliente de ubicación
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        
+        // Inicialización de componentes y eventos
         iniVistas();
         initListeners();
+        
+        // Recuperación de parámetros pasados por el Intent para determinar si es creación o actualización
         visitaId = getIntent().getIntExtra("VISITA_ID", -1);
         position = getIntent().getIntExtra("POSITION", -1);
 
+        // Si existe un ID válido, se procede a cargar los datos del registro para su edición
         if (visitaId != -1) {
             cargarDatos(visitaId);
-            btnGuardar.setText("Actualizar"); // UX PRO 🔥
+            btnGuardar.setText(R.string.actualizar);
         }
-        //Iniciamos el launcher de la cámara
+        
+        /**
+         * Registro del contrato para la captura de fotografía desde la cámara.
+         * En caso de éxito, actualiza la UI con la ruta del archivo y previsualiza la imagen.
+         */
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 result -> {
-
                     if (result) {
-
                         txvFotoComercio.setText(rutaFotoActual);
-
                         imgFotoComercio.setImageURI(photoUri);
 
+                        // Notifica al sistema de medios para que la imagen sea visible en la galería
                         MediaScannerConnection.scanFile(
                                 this,
                                 new String[]{rutaFotoActual},
@@ -104,19 +149,35 @@ public class Act_NuevaVisita extends AppCompatActivity {
                                 null
                         );
 
-                        Toast.makeText(this,
-                                "Foto tomada correctamente",
-                                Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(this, "Foto tomada correctamente", Toast.LENGTH_SHORT).show();
                     } else {
-
-                        Toast.makeText(this,
-                                "No se tomó la foto",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "No se tomó la foto", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
 
+        /**
+         * Registro del contrato para la selección de contenido desde la galería.
+         * En caso de éxito, realiza una copia local del archivo para asegurar su persistencia en el scope de la app.
+         */
+        galeriaLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        try {
+                            String ruta = copiarImagenAGaleriaLocal(uri);
+                            txvFotoComercio.setText(ruta);
+                            imgFotoComercio.setImageURI(Uri.fromFile(new File(ruta)));
+                            Toast.makeText(this, "Imagen seleccionada", Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, "Error al copiar imagen", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
+        // Ajuste dinámico de paddings para respetar las barras del sistema (Status y Navigation bar)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -124,13 +185,15 @@ public class Act_NuevaVisita extends AppCompatActivity {
         });
     }
 
-    /// Método que nos inicializa todas las de la actividad actual
+    /**
+     * Vincula las variables locales con los elementos definidos en el archivo de diseño XML.
+     */
     private void iniVistas() {
-        /// Activamos el ToolBar para visualización de herramientas y menú
-        //Toolbar
+        // Configuración del ToolBar como ActionBar de la actividad
         toolbar = findViewById(R.id.nueVisita_toolbar);
         setSupportActionBar(toolbar);
-        //Spinner
+        
+        // Mapeo de selectores (Spinners)
         spinPais = findViewById(R.id.spinPaises);
         spinProspector = findViewById(R.id.spinProspector);
         spinTipoCliente = findViewById(R.id.spinTipCliente);
@@ -141,7 +204,8 @@ public class Act_NuevaVisita extends AppCompatActivity {
         spinVenta = findViewById(R.id.spinClieVenta);
         spinClieNuevo = findViewById(R.id.spinClieNuevo);
         spinCodigo = findViewById(R.id.spinClieCodigo);
-        //EditText
+        
+        // Mapeo de campos de texto (EditText)
         txvNombComercial = findViewById(R.id.edtNombComercial);
         txvNombCliente = findViewById(R.id.edtNombCliente);
         txvNumIdentificacion = findViewById(R.id.edtIdCliente);
@@ -151,30 +215,25 @@ public class Act_NuevaVisita extends AppCompatActivity {
         txvModulo = findViewById(R.id.edtModuloVisita);
         txvFotoComercio = findViewById(R.id.edtFotoComercio);
         txvFechaSupervisor = findViewById(R.id.edtFechaApoyo);
-        //ImageView
+        
+        // Mapeo de vistas de imagen y botones
         imgFotoComercio = findViewById(R.id.imgFotoComercio);
-        //Button
         btnObtener = findViewById(R.id.btnNVObtCoordenadas);
         btnGuardar = findViewById(R.id.btnNVGuardar);
         btnFotoComercio = findViewById(R.id.btnTomarFoto);
-
-
+        btnAgregarFoto = findViewById(R.id.btnAgregarFoto);
     }
 
-    /// Método que nos ayuda a validar que todos los campos estén debidamente llenos o seleccionados
+    /**
+     * Ejecuta la lógica de validación de negocio sobre los campos obligatorios del formulario.
+     * @return true si todos los campos cumplen con los requisitos mínimos; false en caso contrario.
+     */
     private boolean validarCamposVisita() {
-
-        // Lista de EditText obligatorios
+        // Validación masiva de campos de texto
         List<EditText> editTexts = Arrays.asList(
                 txvNombComercial, txvNombCliente, txvNumIdentificacion,
                 txvCoordenadas, txvNumTelefono, txvLinkGoogle,
                 txvModulo, txvFotoComercio, txvFechaSupervisor);
-
-        // Lista de Spinners obligatorios
-        List<Spinner> spinners = Arrays.asList(spinPais, spinProspector,
-                spinTipoCliente, spinTipIdentificacion, spinClasComercio,
-                spinDiaVisita, spinApoySupervisor, spinVenta, spinClieNuevo,
-                spinCodigo);
 
         for (EditText editText : editTexts) {
             if (editText.getText().toString().trim().isEmpty()) {
@@ -184,92 +243,101 @@ public class Act_NuevaVisita extends AppCompatActivity {
             }
         }
 
+        // Validación masiva de Spinners para asegurar que se ha seleccionado una opción distinta a la por defecto
+        List<Spinner> spinners = Arrays.asList(spinPais, spinProspector,
+                spinTipoCliente, spinTipIdentificacion, spinClasComercio,
+                spinDiaVisita, spinApoySupervisor, spinVenta, spinClieNuevo,
+                spinCodigo);
+
         for (Spinner sp : spinners) {
             if (sp.getSelectedItemPosition() <= 0) {
-                // Resaltar el Spinner de forma visual
                 View selectedView = sp.getSelectedView();
                 if (selectedView instanceof TextView) {
                     TextView tv = (TextView) selectedView;
-                    tv.setError(getString(R.string.camposObligatorios)); // Muestra el icono de error
+                    tv.setError(getString(R.string.camposObligatorios));
                 }
-                sp.requestFocus(); // Coloca el foco en el Spinner
-                sp.post(sp::performClick); // Simula un clic en el Spinner
+                sp.requestFocus();
+                sp.post(sp::performClick);
                 return false;
             }
         }
-
-        // Si todo pasó la validación retorna true
         return true;
     }
 
+    /**
+     * Define y asigna los escuchadores de eventos para los componentes interactivos.
+     */
     private void initListeners() {
         btnGuardar.setOnClickListener(v -> guardarVisita());
         btnObtener.setOnClickListener(v -> obtenerCoordenadas());
         btnFotoComercio.setOnClickListener(v -> tomarFotoComercio());
+        
+        // Acción de pulsación larga para abrir la galería
+        btnAgregarFoto.setOnLongClickListener(v -> {
+            galeriaLauncher.launch("image/*");
+            return true;
+        });
+        
+        // Despliegue del selector de fecha al interactuar con el campo correspondiente
+        txvFechaSupervisor.setOnClickListener(v -> mostrarDatePicker());
     }
 
-    /// Método que nos permite obtener las coordenadas de la ubicación en donde nos encontramos
-
+    /**
+     * Gestiona la lógica para establecer la ubicación geográfica.
+     * Prioriza la generación de un enlace de Google Maps a partir de coordenadas existentes,
+     * o solicita la ubicación actual del dispositivo si el campo está vacío.
+     */
     private void obtenerCoordenadas() {
+        String coordenadasActuales = txvCoordenadas.getText().toString().trim();
 
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        // Caso en el que el registro ya cuenta con coordenadas: se genera el enlace externo
+        if (!coordenadasActuales.isEmpty() && coordenadasActuales.contains(",")) {
+            String[] latLng = coordenadasActuales.split(",");
+            if (latLng.length == 2) {
+                String lat = latLng[0];
+                String lng = latLng[1];
+                String linkMaps = "https://maps.google.com/?q=" + lat + "," + lng;
+                txvLinkGoogle.setText(linkMaps);
+                Toast.makeText(this, "Link generado desde coordenadas existentes", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
 
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    100
-            );
-
-            Toast.makeText(this,
-                    "Se necesita permiso de ubicación",
-                    Toast.LENGTH_SHORT).show();
-
+        // Verificación de permisos de ubicación en tiempo de ejecución
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            Toast.makeText(this, "Se necesita permiso de ubicación", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        fusedLocationClient.getCurrentLocation(
-                Priority.PRIORITY_HIGH_ACCURACY,
-                null
-        ).addOnSuccessListener(location -> {
+        // Solicitud de ubicación de alta precisión mediante Fused Location Provider
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        double latitud = location.getLatitude();
+                        double longitud = location.getLongitude();
+                        String coordenadas = latitud + "," + longitud;
+                        txvCoordenadas.setText(coordenadas);
 
-            if (location != null) {
-
-                double latitud = location.getLatitude();
-                double longitud = location.getLongitude();
-
-                String coordenadas = latitud + "," + longitud;
-
-                txvCoordenadas.setText(coordenadas);
-
-                // Generar link Google Maps automáticamente
-                String linkMaps = "https://maps.google.com/?q=" + latitud + "," + longitud;
-                txvLinkGoogle.setText(linkMaps);
-
-                Toast.makeText(this,
-                        "Ubicación obtenida correctamente",
-                        Toast.LENGTH_SHORT).show();
-
-            } else {
-
-                Toast.makeText(this,
-                        "No se pudo obtener la ubicación. Active el GPS.",
-                        Toast.LENGTH_LONG).show();
-            }
-
-        }).addOnFailureListener(e -> {
-
-            Toast.makeText(this,
-                    "Error obteniendo ubicación: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
-
-        });
+                        String linkMaps = "https://maps.google.com/?q=" + latitud + "," + longitud;
+                        txvLinkGoogle.setText(linkMaps);
+                        Toast.makeText(this, "Ubicación obtenida correctamente", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "No se pudo obtener la ubicación. Active el GPS.", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error obteniendo ubicación: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
 
+    /**
+     * Orquestador para el guardado de datos.
+     * Determina si debe realizar una inserción o una actualización basándose en el estado de la actividad.
+     */
     private void guardarVisita() {
-
         if (!validarCamposVisita()) {
             return;
         }
@@ -278,32 +346,23 @@ public class Act_NuevaVisita extends AppCompatActivity {
         VisitaDAO visitaDAO = new VisitaDAO(this);
 
         if (visitaId != -1) {
-
-            // MODO EDICIÓN
+            // Operación de Actualización (Update)
             visita.setId(visitaId);
-
             int filas = visitaDAO.updateVisita(visita);
 
             if (filas > 0) {
-
                 Toast.makeText(this, "Visita actualizada", Toast.LENGTH_LONG).show();
-
                 Intent data = new Intent();
                 data.putExtra("VISITA_ID", visitaId);
                 data.putExtra("POSITION", position);
-
                 setResult(RESULT_OK, data);
-
                 finish();
             } else {
                 Toast.makeText(this, "Error al actualizar", Toast.LENGTH_LONG).show();
             }
-
         } else {
-
-            // 🆕 MODO NUEVO
+            // Operación de Inserción (Insert)
             long resultado = visitaDAO.insertVisita(visita);
-
             if (resultado > 0) {
                 Toast.makeText(this, "Visita registrada correctamente", Toast.LENGTH_LONG).show();
                 limpiarFormulario();
@@ -313,25 +372,24 @@ public class Act_NuevaVisita extends AppCompatActivity {
         }
     }
 
+    /**
+     * Mapea los valores de la interfaz de usuario a una instancia del modelo de datos Visita.
+     * @return Objeto Visita con la información recolectada del formulario.
+     */
     private Visita obtenerDatosFormulario() {
-
         Visita visita = new Visita();
 
         visita.setPais(spinPais.getSelectedItem().toString());
         visita.setProspector(spinProspector.getSelectedItem().toString());
         visita.setTipoCliente(spinTipoCliente.getSelectedItem().toString());
-
         visita.setNombreComercial(txvNombComercial.getText().toString().trim());
         visita.setNombreCliente(txvNombCliente.getText().toString().trim());
-
         visita.setTipoIdentificacion(spinTipIdentificacion.getSelectedItem().toString());
         visita.setNumeroIdentificacion(txvNumIdentificacion.getText().toString().trim());
-
         visita.setCoordenadas(txvCoordenadas.getText().toString().trim());
 
-        // Separar latitud y longitud
+        // Procesamiento de coordenadas para almacenamiento atómico en latitud/longitud
         String[] latLng = txvCoordenadas.getText().toString().split(",");
-
         if (latLng.length == 2) {
             visita.setLatitud(Double.parseDouble(latLng[0]));
             visita.setLongitud(Double.parseDouble(latLng[1]));
@@ -348,28 +406,25 @@ public class Act_NuevaVisita extends AppCompatActivity {
         visita.setClienteConVenta(spinVenta.getSelectedItem().toString());
         visita.setClienteNuevo(spinClieNuevo.getSelectedItem().toString());
         visita.setClienteTieneCodigo(spinCodigo.getSelectedItem().toString());
-
+        
+        // Estado por defecto para sincronización posterior
         visita.setEstadoSync(0);
 
         return visita;
     }
 
+    /**
+     * Inicia el flujo de captura de imagen.
+     * Verifica permisos de cámara y genera un URI seguro mediante FileProvider para la comunicación con la app de cámara.
+     */
     private void tomarFotoComercio() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    101);
-
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
             return;
         }
 
         try {
-
             File photoFile = crearArchivoImagen();
-
             photoUri = FileProvider.getUriForFile(
                     this,
                     "nelandac.app.herramientacensador.provider",
@@ -378,30 +433,25 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
             Log.d("FOTO_PATH", photoFile.getAbsolutePath());
             Log.d("FOTO_URI", photoUri.toString());
-            //Lanzamos la cámara
             cameraLauncher.launch(photoUri);
 
         } catch (IOException e) {
-
-            Toast.makeText(this,
-                    "Error creando archivo de imagen",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error creando archivo de imagen", Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * Crea un archivo temporal en el almacenamiento público de imágenes para guardar la captura de la cámara.
+     * @return Objeto File apuntando a la nueva imagen.
+     * @throws IOException Sí ocurre un error durante la creación del archivo.
+     */
     private File crearArchivoImagen() throws IOException {
-
-        String timeStamp = new SimpleDateFormat(
-                "yyyyMMdd_HHmmss",
-                Locale.getDefault()
-        ).format(new Date());
-
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "FOTO_COMERCIO_" + timeStamp + ".jpg";
 
-        // Carpeta pública de imágenes
+        // Carpeta persistente bajo el directorio de imágenes del sistema
         File storageDir = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES),
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                 "HerramientaCensador"
         );
 
@@ -410,15 +460,15 @@ public class Act_NuevaVisita extends AppCompatActivity {
         }
 
         File image = new File(storageDir, imageFileName);
-
         rutaFotoActual = image.getAbsolutePath();
 
         return image;
     }
 
+    /**
+     * Restablece todos los campos del formulario a su estado inicial.
+     */
     private void limpiarFormulario() {
-
-        // Limpiar EditText
         txvNombComercial.setText("");
         txvNombCliente.setText("");
         txvNumIdentificacion.setText("");
@@ -429,10 +479,8 @@ public class Act_NuevaVisita extends AppCompatActivity {
         txvFotoComercio.setText("");
         txvFechaSupervisor.setText("");
 
-        // Limpiar imagen
         imgFotoComercio.setImageDrawable(null);
 
-        // Resetear Spinners
         spinPais.setSelection(0);
         spinProspector.setSelection(0);
         spinTipoCliente.setSelection(0);
@@ -444,25 +492,24 @@ public class Act_NuevaVisita extends AppCompatActivity {
         spinClieNuevo.setSelection(0);
         spinCodigo.setSelection(0);
 
-        // Limpiar ruta de foto
         rutaFotoActual = null;
     }
-    private void cargarDatos(int id) {
 
+    /**
+     * Carga la información de una visita desde la base de datos y actualiza la UI para modo edición.
+     * @param id Identificador único del registro en la base de datos.
+     */
+    private void cargarDatos(int id) {
         VisitaDAO dao = new VisitaDAO(this);
         Visita v = dao.getVisitaById(id);
 
         if (v != null) {
-
             spinPais.setSelection(getIndex(spinPais, v.getPais()));
             spinProspector.setSelection(getIndex(spinProspector, v.getProspector()));
             spinTipoCliente.setSelection(getIndex(spinTipoCliente, v.getTipoCliente()));
-
             txvNombComercial.setText(v.getNombreComercial());
             txvNombCliente.setText(v.getNombreCliente());
-
             spinTipIdentificacion.setSelection(getIndex(spinTipIdentificacion, v.getTipoIdentificacion()));
-
             txvNumIdentificacion.setText(v.getNumeroIdentificacion());
             txvCoordenadas.setText(v.getCoordenadas());
             txvNumTelefono.setText(v.getTelefono());
@@ -470,7 +517,6 @@ public class Act_NuevaVisita extends AppCompatActivity {
             txvModulo.setText(v.getModulo());
             txvFotoComercio.setText(v.getFotoNegocio());
             txvFechaSupervisor.setText(v.getFechaCoordinada());
-
             spinClasComercio.setSelection(getIndex(spinClasComercio, v.getClasificacionNegocio()));
             spinDiaVisita.setSelection(getIndex(spinDiaVisita, v.getDiaVisita()));
             spinApoySupervisor.setSelection(getIndex(spinApoySupervisor, v.getSolicitaApoyoSupervisor()));
@@ -478,7 +524,6 @@ public class Act_NuevaVisita extends AppCompatActivity {
             spinClieNuevo.setSelection(getIndex(spinClieNuevo, v.getClienteNuevo()));
             spinCodigo.setSelection(getIndex(spinCodigo, v.getClienteTieneCodigo()));
 
-            // Imagen
             if (v.getFotoNegocio() != null && !v.getFotoNegocio().isEmpty()) {
                 Uri uri = Uri.fromFile(new File(v.getFotoNegocio()));
                 imgFotoComercio.setImageURI(uri);
@@ -486,6 +531,12 @@ public class Act_NuevaVisita extends AppCompatActivity {
         }
     }
 
+    /**
+     * Utilidad para encontrar la posición de un valor específico dentro del adaptador de un Spinner.
+     * @param spinner El componente Spinner a evaluar.
+     * @param value El valor en formato String a localizar.
+     * @return El índice del valor encontrado o 0 por defecto.
+     */
     private int getIndex(Spinner spinner, String value) {
         for (int i = 0; i < spinner.getCount(); i++) {
             if (spinner.getItemAtPosition(i).toString().equals(value)) {
@@ -493,5 +544,57 @@ public class Act_NuevaVisita extends AppCompatActivity {
             }
         }
         return 0;
+    }
+
+    /**
+     * Realiza una copia física de una imagen seleccionada desde una URI externa a una ubicación local gestionada por la app.
+     * @param uri URI de origen de la imagen.
+     * @return Ruta absoluta del archivo copiado en el almacenamiento local.
+     * @throws IOException Si falla el flujo de lectura o escritura.
+     */
+    private String copiarImagenAGaleriaLocal(Uri uri) throws IOException {
+        File carpeta = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                "HerramientaCensador"
+        );
+
+        if (!carpeta.exists()) carpeta.mkdirs();
+
+        String nombreArchivo = "FOTO_COMERCIO_" + System.currentTimeMillis() + ".jpg";
+        File archivoDestino = new File(carpeta, nombreArchivo);
+
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        OutputStream outputStream = new FileOutputStream(archivoDestino);
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+        }
+
+        inputStream.close();
+        outputStream.close();
+
+        return archivoDestino.getAbsolutePath();
+    }
+
+    /**
+     * Despliega un DatePickerDialog para la selección de fechas y formatea la salida para el usuario.
+     */
+    private void mostrarDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog dialog = new DatePickerDialog(
+                this,
+                (view, year, month, day) -> {
+                    String fecha = String.format("%02d", day) + "-" +
+                            String.format("%02d", month + 1) + "-" +
+                            year;
+                    txvFechaSupervisor.setText(fecha);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        dialog.show();
     }
 }

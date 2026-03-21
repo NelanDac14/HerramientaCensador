@@ -1,16 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Selector: spinner_primary.xml
+    Responsabilidad: Define los estados visuales para los componentes de selección desplegable (Spinner).
+    Estructura: Utiliza un selector para alternar entre el estado de foco y el estado predeterminado,
+    asegurando una guía visual clara durante la navegación del formulario.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Estado: En foco o selección activa -->
     <item android:state_focused="true">
         <shape>
+            <!-- Fondo sólido blanco para legibilidad -->
             <solid android:color="#FFFFFF"/>
+            <!-- Borde resaltado con el color primario del sistema y grosor incrementado -->
             <stroke android:width="2dp" android:color="#006F84"/>
+            <!-- Radio de curvatura consistente con el lenguaje visual de la app -->
             <corners android:radius="12dp"/>
         </shape>
     </item>
 
+    <!-- Estado: Predeterminado o reposo -->
     <item>
         <shape>
             <solid android:color="#FFFFFF"/>
+            <!-- Borde sutil en tono gris para delimitar el componente sin sobrecarga visual -->
             <stroke android:width="1dp" android:color="#DADADA"/>
             <corners android:radius="12dp"/>
         </shape>

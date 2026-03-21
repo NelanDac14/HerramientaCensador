@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout: activity_act_nueva_visita.xml
+    Responsabilidad: Define la interfaz de usuario para la captura y edición de datos de censos comerciales.
+    Estructura: Utiliza ConstraintLayout como contenedor raíz para posicionamiento flexible,
+    un ScrollView para permitir el desplazamiento en formularios extensos y Material Components
+    para asegurar el cumplimiento de las guías de diseño de Android.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +14,11 @@
     android:layout_height="match_parent"
     tools:context=".vistas_usuario.Act_NuevaVisita">
 
-    <!--ToolBar-->
+    <!--
+        Toolbar Superior:
+        Actúa como la barra de acciones de la aplicación.
+        Proporciona contexto visual del título de la pantalla mediante el atributo app:title.
+    -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/nueVisita_toolbar"
         android:layout_width="match_parent"
@@ -21,7 +32,11 @@
         app:title="@string/tituloNuevaVisita"
         app:titleTextColor="@color/white" />
 
-    <!--ScrollView Principal-->
+    <!--
+        ScrollView Principal:
+        Contenedor de desplazamiento que garantiza la accesibilidad de todos los campos del formulario
+        independientemente de la resolución de pantalla del dispositivo.
+    -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="665dp"
@@ -35,12 +50,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nueVisita_toolbar">
 
+        <!-- Contenedor lineal vertical para la organización secuencial de los campos de entrada -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!--Países-->
+            <!-- Sección: Selección de País -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,7 +64,6 @@
                 android:textColor="#006F84"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-
 
             <Spinner
                 android:id="@+id/spinPaises"
@@ -61,7 +76,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Prospector encargado-->
+            <!-- Sección: Selección de Prospector (Censador encargado) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,7 +96,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Tipo de cliente-->
+            <!-- Sección: Tipo de Cliente -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,7 +116,10 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Nombre Comercial-->
+            <!--
+                Campo: Nombre Comercial
+                Utiliza TextInputLayout con estilo OutlinedBox para una estética moderna y soporte nativo de validación de errores.
+            -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilNombComercial"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -124,7 +142,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Nombre del cliente-->
+            <!-- Campo: Nombre Completo del Cliente -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilNombCliente"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -147,7 +165,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Tipo de identificación-->
+            <!-- Sección: Tipo de Identificación Legal -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,7 +185,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Número de Identificación-->
+            <!-- Campo: Número de Identificación (Numérico) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilIdCliente"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -190,7 +208,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Clasificación de negocios-->
+            <!-- Sección: Clasificación de Negocio -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -210,7 +228,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Teléfono de contacto-->
+            <!-- Campo: Teléfono de Contacto (InputType optimizado para marcado) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilTelefono"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -233,8 +251,10 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Dirección en coordenadas-->
-
+            <!--
+                Bloque: Ubicación Geográfica
+                Combina un campo de texto para mostrar coordenadas y un botón para invocar el sensor de ubicación.
+            -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -257,12 +277,11 @@
                         android:id="@+id/edtCoordenadas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:focusable="false" />
+                        android:background="@color/white" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!--Botón de Obtener coordenadas-->
+                <!-- Acción: Disparador de geolocalización -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnNVObtCoordenadas"
                     android:layout_width="wrap_content"
@@ -282,7 +301,7 @@
 
             </LinearLayout>
 
-            <!--Link de Google Maps-->
+            <!-- Campo: Enlace de Google Maps (Solo lectura para el usuario, generado por código) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilLinkGoogle"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -306,7 +325,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Módulo-->
+            <!-- Campo: Módulo Asociado -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilModulo"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -329,7 +348,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Foto del comercio-->
+            <!-- Bloque: Evidencia Fotográfica -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -345,6 +364,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <!-- Previsualización de la imagen capturada o seleccionada -->
                 <ImageView
                     android:id="@+id/imgFotoComercio"
                     android:layout_width="match_parent"
@@ -353,6 +373,7 @@
                     android:contentDescription="@string/foto_comercio"
                     android:scaleType="centerCrop" />
 
+                <!-- Campo Informativo: Ruta del archivo de imagen -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilFotoComercio"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -380,25 +401,51 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTomarFoto"
+                <!-- Acciones Fotográficas: Captura desde cámara y selección desde galería -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:text="@string/tomar_foto_del_comercio"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="#006F84"
-                    app:cornerRadius="16dp"
-                    app:elevation="6dp"
-                    app:rippleColor="#33FFFFFF" />
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTomarFoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="6dp"
+                        android:layout_weight="0"
+                        android:text="@string/tomar_foto_del_comercio"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="#006F84"
+                        app:cornerRadius="16dp"
+                        app:elevation="6dp"
+                        app:rippleColor="#33FFFFFF" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAgregarFoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="6dp"
+                        android:layout_weight="1"
+                        android:text="@string/galeria"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="#006F84"
+                        app:cornerRadius="16dp"
+                        app:elevation="6dp"
+                        app:rippleColor="#33FFFFFF" />
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!--Día de visita-->
+            <!-- Sección: Planificación de Visitas (Día de la semana) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -418,7 +465,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Apoyo del supervisor-->
+            <!-- Sección: Requerimiento de Apoyo por Supervisor -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -438,7 +485,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Fecha de visita coordinada-->
+            <!-- Campo: Fecha Coordinada (Utiliza DatePicker mediante interacción por código) -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilFecha"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -461,7 +508,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Cliente con venta-->
+            <!-- Sección: Atributos de Cliente (Venta, Estado Nuevo, Código Existente) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -481,7 +528,6 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Cliente nuevo-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -501,7 +547,6 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Cliente código-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -521,7 +566,7 @@
                 android:padding="12dp"
                 android:popupBackground="#FFFFFF" />
 
-            <!--Botón de guardado-->
+            <!-- Acción Principal: Persistencia de los datos del formulario -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNVGuardar"
                 android:layout_width="wrap_content"

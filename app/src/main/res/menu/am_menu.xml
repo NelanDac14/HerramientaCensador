@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Menú: am_menu.xml
+    Responsabilidad: Define las opciones de navegación global disponibles desde la pantalla principal (MainActivity).
+    Estructura: Define elementos de menú que se integran en la Toolbar para facilitar el acceso a los módulos de registro y consulta.
+-->
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
+    <!-- Opción: Acceso al formulario de registro de nuevas visitas -->
     <item
         android:id="@+id/item_nueva_visita"
         android:title="@string/am_op1"
         android:contentDescription="@string/am_op1"/>
 
+    <!-- Opción: Acceso al histórico y bitácora de visitas registradas -->
     <item
         android:id="@+id/item_ver_visitas"
         android:title="@string/am_op2"
         android:contentDescription="@string/am_op2"/>
-
 
 </menu>
