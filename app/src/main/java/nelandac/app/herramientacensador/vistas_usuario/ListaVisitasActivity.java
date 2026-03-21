@@ -5,21 +5,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Toast;
 
-import org.apache.poi.ss.usermodel.*;
-
-import java.util.Date;
-import java.util.Locale;
-
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,207 +31,231 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.List;
-import java.util.Calendar;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
+import nelandac.app.herramientacensador.R;
 import nelandac.app.herramientacensador.modelos.Visita;
 import nelandac.app.herramientacensador.modelos.VisitaDAO;
 import nelandac.app.herramientacensador.modelos.VisitasAdapter;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import nelandac.app.herramientacensador.R;
-
 /**
- * Clase ListaVisitasActivity
+ * Actividad: ListaVisitasActivity
  * 
- * Esta actividad es la encargada de visualizar el histórico de visitas registradas en el sistema.
- * Implementa funcionalidades avanzadas de filtrado por criterios temporales (hoy, fecha específica, 
- * mes actual, año actual o histórico total). Además, provee la lógica para la exportación de datos 
- * a formato Microsoft Excel (.xlsx) y visualización geográfica de los registros.
+ * Gestiona el panel principal de consulta de la cartera de clientes.
+ * Implementa capacidades avanzadas de filtrado temporal (Chips) y búsqueda dinámica
+ * por texto, integrando además la exportación de reportes a Excel.
+ * 
+ * Características Senior:
+ * - Arquitectura de "Doble Lista" para optimización de búsquedas en memoria.
+ * - Soporte Edge-to-Edge para adaptabilidad en dispositivos modernos.
+ * - Orquestación de navegación hacia formularios de edición y seguimiento.
  */
 public class ListaVisitasActivity extends AppCompatActivity {
 
-    // Componentes de interfaz de usuario para la visualización de datos
+    /** Componente principal de visualización masiva de registros. */
     private RecyclerView recyclerVisitas;
+    
+    /** Adaptador para la gestión de la colección en el RecyclerView. */
     private VisitasAdapter adapter;
-    private List<Visita> lista;
-
-    // Componentes de control para el filtrado dinámico
+    
+    /** Fuente de datos completa proveniente de la persistencia. */
+    private List<Visita> listaFull; 
+    
+    /** Subconjunto de datos resultante de filtros y búsquedas activas. */
+    private List<Visita> listaFiltrada; 
+    
+    /** Controles de filtrado temporal. */
     private Chip chipHoy, chipFecha, chipMes, chipAnio, chipTodo;
+    
+    /** Campo de entrada para búsqueda dinámica. */
+    private TextInputEditText edtBuscar;
 
-    // Lanzador para la gestión de resultados de actividades externas (Edición de registros)
+    /** Lanzadores de resultados para sincronización de cambios desde otras pantallas. */
     private ActivityResultLauncher<Intent> launcherEditar;
+    private ActivityResultLauncher<Intent> launcherSeguimiento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Habilitación de renderizado Edge-to-Edge
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_lista_visitas);
 
-        /**
-         * Inicialización del ActivityResultLauncher.
-         * Se encarga de procesar la respuesta proveniente de la pantalla de edición (Act_NuevaVisita).
-         * Si el resultado es exitoso, actualiza el elemento específico en la lista local y notifica 
-         * el cambio al adaptador para reflejar la actualización en la UI sin recargar toda la fuente de datos.
-         */
+        // Inicialización de componentes y lógica de negocio
+        initLaunchers();
+        initVistas();
+        setupInsets();
+        cargarDatosIniciales();
+        setupBusqueda();
+    }
+
+    /**
+     * Registra los callbacks para procesar el retorno desde pantallas de edición o bitácora.
+     */
+    private void initLaunchers() {
         launcherEditar = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        int position = result.getData().getIntExtra("POSITION", -1);
-                        int id = result.getData().getIntExtra("VISITA_ID", -1);
-
-                        if (position != -1) {
-                            VisitaDAO dao = new VisitaDAO(this);
-                            Visita visitaActualizada = dao.getVisitaById(id);
-
-                            // Actualización atómica de la colección local
-                            lista.set(position, visitaActualizada);
-                            adapter.notifyItemChanged(position);
-                        }
+                        cargarDatosIniciales(); 
                     }
                 }
         );
 
-        // Vinculación de vistas con los componentes del layout
+        launcherSeguimiento = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> cargarDatosIniciales()
+        );
+    }
+
+    /**
+     * Vincula los widgets del layout XML y configura los disparadores de filtrado.
+     */
+    private void initVistas() {
         recyclerVisitas = findViewById(R.id.recyclerVisitas);
         chipHoy = findViewById(R.id.chipHoy);
         chipFecha = findViewById(R.id.chipFecha);
         chipMes = findViewById(R.id.chipMes);
         chipAnio = findViewById(R.id.chipAnio);
         chipTodo = findViewById(R.id.chipTodo);
+        edtBuscar = findViewById(R.id.edtBuscar);
+        
         FloatingActionButton fabExportar = findViewById(R.id.fabExportarExcel);
         FloatingActionButton fabMapa = findViewById(R.id.fabMapa);
 
-        // Configuración del administrador de diseño para el RecyclerView
         recyclerVisitas.setLayoutManager(new LinearLayoutManager(this));
 
-        // Inicialización del objeto de acceso a datos y carga inicial de información
         VisitaDAO dao = new VisitaDAO(this);
-        lista = dao.obtenerVisitas();
 
-        /**
-         * Evento para filtrar visitas del día actual.
-         * Limpia la colección existente y la puebla con los resultados de la consulta temporal 'hoy'.
-         */
+        // Lógica de filtrado con persistencia de búsqueda actual
         chipHoy.setOnClickListener(v -> {
-            lista.clear();
-            lista.addAll(dao.obtenerHoy());
-            adapter.notifyDataSetChanged();
+            listaFull = dao.obtenerHoy();
+            filtrarPorNombre(edtBuscar.getText().toString());
         });
 
-        /**
-         * Evento para recuperar el histórico completo de visitas.
-         */
         chipTodo.setOnClickListener(v -> {
-            lista.clear();
-            lista.addAll(dao.obtenerVisitas());
-            adapter.notifyDataSetChanged();
+            listaFull = dao.obtenerVisitas();
+            filtrarPorNombre(edtBuscar.getText().toString());
         });
 
-        /**
-         * Evento para filtrado por fecha específica mediante un DatePickerDialog.
-         * Una vez seleccionada la fecha, se realiza el formateo compatible con la base de datos (YYYY-MM-DD)
-         * y se actualiza la fuente de datos del adaptador.
-         */
         chipFecha.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
-            DatePickerDialog dialog = new DatePickerDialog(
-                    this,
-                    (view, year, month, day) -> {
-                        String fecha = year + "-" +
-                                String.format("%02d", month + 1) + "-" +
-                                String.format("%02d", day);
-
-                        lista.clear();
-                        lista.addAll(dao.obtenerPorFecha(fecha));
-                        adapter.notifyDataSetChanged();
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
-            dialog.show();
+            new DatePickerDialog(this, (view, year, month, day) -> {
+                String fecha = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", day);
+                listaFull = dao.obtenerPorFecha(fecha);
+                filtrarPorNombre(edtBuscar.getText().toString());
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        /**
-         * Evento para filtrar visitas registradas en el mes en curso.
-         */
         chipMes.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int mesNumero = calendar.get(Calendar.MONTH) + 1;
-            String mes = String.format("%02d", mesNumero);
-
-            lista.clear();
-            lista.addAll(dao.obtenerPorMes(mes));
-            adapter.notifyDataSetChanged();
+            String mes = String.format("%02d", Calendar.getInstance().get(Calendar.MONTH) + 1);
+            listaFull = dao.obtenerPorMes(mes);
+            filtrarPorNombre(edtBuscar.getText().toString());
         });
 
-        /**
-         * Evento para filtrar visitas registradas en el año en curso.
-         */
         chipAnio.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            String anio = String.valueOf(calendar.get(Calendar.YEAR));
-
-            lista.clear();
-            lista.addAll(dao.obtenerPorAnio(anio));
-            adapter.notifyDataSetChanged();
+            String anio = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            listaFull = dao.obtenerPorAnio(anio);
+            filtrarPorNombre(edtBuscar.getText().toString());
         });
 
-        // Configuración de las acciones para los botones flotantes
         fabExportar.setOnClickListener(v -> exportarExcel());
-
-        fabMapa.setOnClickListener(v -> {
-            startActivity(new Intent(this, MapaVisitasActivity.class));
-        });
-
-        /**
-         * Inicialización del adaptador con la lógica de interacción de items.
-         * Cuando se selecciona un item para editar, se prepara un Intent hacia Act_NuevaVisita 
-         * pasando el ID del registro y su posición en la lista para su posterior actualización.
-         */
-        adapter = new VisitasAdapter(this, lista, (visita, position) -> {
-            Intent intent = new Intent(this, Act_NuevaVisita.class);
-            intent.putExtra("VISITA_ID", visita.getId());
-            intent.putExtra("POSITION", position);
-            launcherEditar.launch(intent);
-        });
-
-        recyclerVisitas.setAdapter(adapter);
+        fabMapa.setOnClickListener(v -> startActivity(new Intent(this, MapaVisitasActivity.class)));
     }
 
     /**
-     * Proceso de generación y exportación de archivos Excel.
-     * Utiliza la librería Apache POI para crear un libro de trabajo (.xlsx) en memoria,
-     * define los encabezados de columna y vuelca la información de la lista filtrada actual.
-     * El archivo se almacena en el directorio público de documentos del dispositivo.
+     * Implementa la lógica de búsqueda dinámica (Incremental Search).
+     * Reacciona a cada evento de teclado para actualizar la lista en tiempo real.
      */
+    private void setupBusqueda() {
+        edtBuscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filtrarPorNombre(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+    }
+
+    /**
+     * Procesa la lista maestra para generar el subconjunto filtrado por coincidencia textual.
+     * @param texto Cadena de búsqueda.
+     */
+    private void filtrarPorNombre(String texto) {
+        listaFiltrada.clear();
+        String query = texto.toLowerCase().trim();
+
+        if (query.isEmpty()) {
+            listaFiltrada.addAll(listaFull);
+        } else {
+            for (Visita v : listaFull) {
+                // Búsqueda en múltiples campos comerciales
+                if (v.getNombreComercial().toLowerCase().contains(query) || 
+                    v.getNombreCliente().toLowerCase().contains(query)) {
+                    listaFiltrada.add(v);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    /** Ajusta los paddings de la actividad para respetar las barras de navegación y estado. */
+    private void setupInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+    }
+
+    /** Carga inicial del histórico completo y configuración del adaptador. */
+    private void cargarDatosIniciales() {
+        VisitaDAO dao = new VisitaDAO(this);
+        listaFull = dao.obtenerVisitas();
+        listaFiltrada = new ArrayList<>(listaFull);
+        
+        adapter = new VisitasAdapter(this, listaFiltrada, new VisitasAdapter.OnItemActionListener() {
+            @Override
+            public void onEditar(Visita visita, int position) {
+                Intent intent = new Intent(ListaVisitasActivity.this, Act_NuevaVisita.class);
+                intent.putExtra("VISITA_ID", visita.getId());
+                intent.putExtra("POSITION", position);
+                launcherEditar.launch(intent);
+            }
+
+            @Override
+            public void onSeguimiento(Visita visita) {
+                Intent intent = new Intent(ListaVisitasActivity.this, Act_Seguimiento.class);
+                intent.putExtra("VISITA_ID", visita.getId());
+                intent.putExtra("NOMBRE_CLIENTE", visita.getNombreComercial());
+                launcherSeguimiento.launch(intent);
+            }
+        });
+        recyclerVisitas.setAdapter(adapter);
+    }
+
+    /** Genera y exporta el reporte Excel respetando los filtros de visualización activos. */
     private void exportarExcel() {
         try {
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Visitas");
+            String[] headers = {"ID", "Pais", "Prospector", "Tipo Cliente", "Nombre Comercial", "Nombre Cliente", "Teléfono", "Día Visita", "Fecha Registro"};
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) headerRow.createCell(i).setCellValue(headers[i]);
 
-            // Definición de la estructura de encabezados
-            String[] headers = {
-                    "ID", "Pais", "Prospector", "Tipo Cliente", "Nombre Comercial",
-                    "Nombre Cliente", "Tipo Identificación", "Número Identificación",
-                    "Coordenadas", "Latitud", "Longitud", "Clasificación Negocio",
-                    "Teléfono", "Link Google Maps", "Modulo",
-                    "Día Visita", "Solicita Apoyo Supervisor", "Fecha Coordinada",
-                    "Cliente con Venta", "Cliente Nuevo", "Cliente con Código", "Fecha Registro"
-            };
-
-            Row header = sheet.createRow(0);
-            for (int i = 0; i < headers.length; i++) {
-                header.createCell(i).setCellValue(headers[i]);
-            }
-
-            // Poblado de filas con la información de los objetos Visita
             int rowNum = 1;
-            for (Visita v : lista) {
+            for (Visita v : listaFiltrada) { 
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(v.getId());
                 row.createCell(1).setCellValue(v.getPais());
@@ -236,85 +263,31 @@ public class ListaVisitasActivity extends AppCompatActivity {
                 row.createCell(3).setCellValue(v.getTipoCliente());
                 row.createCell(4).setCellValue(v.getNombreComercial());
                 row.createCell(5).setCellValue(v.getNombreCliente());
-                row.createCell(6).setCellValue(v.getTipoIdentificacion());
-                row.createCell(7).setCellValue(v.getNumeroIdentificacion());
-                row.createCell(8).setCellValue(v.getCoordenadas());
-                row.createCell(9).setCellValue(v.getLatitud());
-                row.createCell(10).setCellValue(v.getLongitud());
-                row.createCell(11).setCellValue(v.getClasificacionNegocio());
-                row.createCell(12).setCellValue(v.getTelefono());
-                row.createCell(13).setCellValue(v.getLinkGoogleMaps());
-                row.createCell(14).setCellValue(v.getModulo());
-                row.createCell(15).setCellValue(v.getDiaVisita());
-                row.createCell(16).setCellValue(v.getSolicitaApoyoSupervisor());
-                row.createCell(17).setCellValue(v.getFechaCoordinada());
-                row.createCell(18).setCellValue(v.getClienteConVenta());
-                row.createCell(19).setCellValue(v.getClienteNuevo());
-                row.createCell(20).setCellValue(v.getClienteTieneCodigo());
-                row.createCell(21).setCellValue(v.getFechaRegistro());
+                row.createCell(6).setCellValue(v.getTelefono());
+                row.createCell(7).setCellValue(v.getDiaVisita());
+                row.createCell(8).setCellValue(v.getFechaRegistro());
             }
 
-            // Inmovilización de la fila superior para facilitar la lectura
-            sheet.createFreezePane(0, 1);
-
-            // Generación del nombre de archivo basado en marca de tiempo
-            String fecha = new SimpleDateFormat(
-                    "yyyy_MM_dd_HH_mm",
-                    Locale.getDefault()
-            ).format(new Date());
-
-            String nombreArchivo = "visitas_" + fecha + ".xlsx";
-
-            // Gestión de directorios y persistencia del archivo físico
-            File carpeta = new File(
-                    Environment.getExternalStoragePublicDirectory(
-                            Environment.DIRECTORY_DOCUMENTS),
-                    "HerramientaCensador"
-            );
-
+            File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "HerramientaCensador");
             if (!carpeta.exists()) carpeta.mkdirs();
-
-            File archivo = new File(carpeta, nombreArchivo);
+            File archivo = new File(carpeta, "visitas_reporte.xlsx");
             FileOutputStream fos = new FileOutputStream(archivo);
-
             workbook.write(fos);
             fos.close();
             workbook.close();
-
-            Toast.makeText(this,
-                    "Excel guardado en Documents/HerramientaCensador",
-                    Toast.LENGTH_LONG).show();
-
-            // Inicio del flujo para compartir el archivo generado
             compartirExcel(archivo);
-
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this,
-                    "Error exportando Excel",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error al exportar", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Gestiona la distribución del archivo Excel mediante el sistema de Intents.
-     * Utiliza un FileProvider para generar una URI segura, permitiendo que aplicaciones externas
-     * (como clientes de correo o mensajería) tengan acceso temporal de lectura al documento.
-     * 
-     * @param archivo Referencia al archivo físico generado.
-     */
+    /** Lanza el selector global para compartir el reporte generado. */
     private void compartirExcel(File archivo) {
-        Uri uri = FileProvider.getUriForFile(
-                this,
-                "nelandac.app.herramientacensador.provider",
-                archivo
-        );
-
+        Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", archivo);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        startActivity(Intent.createChooser(intent, "Compartir Excel"));
+        startActivity(Intent.createChooser(intent, "Compartir Reporte"));
     }
 }

@@ -7,6 +7,11 @@
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Acción: Registrar un nuevo evento de seguimiento para este cliente -->
+    <item
+        android:id="@+id/menuSeguimiento"
+        android:title="@string/registrar_seguimiento" />
+
     <!-- Acción: Abrir el formulario en modo edición para el registro seleccionado -->
     <item
         android:id="@+id/menuEditar"

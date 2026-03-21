@@ -14,20 +14,17 @@
     <!--
         Barra de Filtros:
         Permite al usuario segmentar la información por criterios temporales.
-        Se implementa dentro de un HorizontalScrollView para asegurar la navegabilidad de los filtros
-        en dispositivos con pantallas de dimensiones reducidas.
     -->
     <HorizontalScrollView
         android:id="@+id/scrollFiltros"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Agrupación de filtros mediante Material Chips con selección única -->
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupFiltros"
             android:layout_width="wrap_content"
@@ -74,11 +71,34 @@
 
     </HorizontalScrollView>
 
-    <!--
-        Listado de Visitas:
-        Componente de visualización masiva de datos.
-        Utiliza el patrón de reciclaje de vistas para optimizar el consumo de memoria RAM.
-    -->
+    <!-- Barra de Búsqueda por Nombre -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilBuscar"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/buscar_por_nombre"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxStrokeColor="#006F84"
+        app:endIconMode="clear_text"
+        app:layout_constraintTop_toBottomOf="@id/scrollFiltros"
+        app:startIconDrawable="@android:drawable/ic_menu_search">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtBuscar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Listado de Visitas -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerVisitas"
         android:layout_width="0dp"
@@ -89,12 +109,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollFiltros" />
+        app:layout_constraintTop_toBottomOf="@id/tilBuscar" />
 
-    <!--
-        Botón Flotante: Exportación Excel
-        Provee acceso rápido a la función de generación de reportes .xlsx.
-    -->
+    <!-- BOTÓN EXPORTAR EXCEL -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabExportarExcel"
         android:layout_width="wrap_content"
@@ -105,10 +122,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!--
-        Botón Flotante: Mapa General
-        Permite la transición hacia la vista geográfica masiva de todos los puntos registrados.
-    -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMapa"
         android:layout_width="wrap_content"

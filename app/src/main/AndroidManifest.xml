@@ -30,9 +30,17 @@
         <activity
             android:name=".vistas_usuario.MapaVisitasActivity"
             android:exported="false" />
-        <activity android:name=".vistas_usuario.ListaVisitasActivity" />
+        <activity
+            android:name=".vistas_usuario.ListaVisitasActivity"
+            android:exported="false" />
         <activity
             android:name=".vistas_usuario.Act_NuevaVisita"
+            android:exported="false" />
+        <activity
+            android:name=".vistas_usuario.Act_Seguimiento"
+            android:exported="false" />
+        <activity
+            android:name=".vistas_usuario.DetalleClienteActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout: activity_detalle_cliente.xml
+    Responsabilidad: Visualización del expediente completo del cliente.
+    Propósito: Combina los datos maestros (estáticos) con el historial dinámico de visitas (bitácora).
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Sección Superior: Datos Maestros del Cliente -->
+    <TextView
+        android:id="@+id/txtDetalleNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Comercio"
+        android:textColor="#006F84"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDetalleInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Información de contacto y ubicación"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/txtDetalleNombre" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#DADADA"
+        app:layout_constraintTop_toBottomOf="@id/txtDetalleInfo" />
+
+    <!-- Sección Inferior: Bitácora Histórica (Línea de tiempo) -->
+    <TextView
+        android:id="@+id/lblHistorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="HISTORIAL DE VISITAS"
+        android:textColor="#006F84"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerHistorial"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lblHistorial" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

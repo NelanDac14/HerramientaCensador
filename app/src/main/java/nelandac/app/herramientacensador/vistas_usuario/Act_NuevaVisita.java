@@ -427,7 +427,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
             File photoFile = crearArchivoImagen();
             photoUri = FileProvider.getUriForFile(
                     this,
-                    "nelandac.app.herramientacensador.provider",
+                    getPackageName() + ".provider",
                     photoFile
             );
 
@@ -446,6 +446,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
      * @throws IOException Sí ocurre un error durante la creación del archivo.
      */
     private File crearArchivoImagen() throws IOException {
+        // Marca de tiempo en formato local explícito
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "FOTO_COMERCIO_" + timeStamp + ".jpg";
 
@@ -560,6 +561,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
         if (!carpeta.exists()) carpeta.mkdirs();
 
+        // Nombre de archivo con marca de tiempo local
         String nombreArchivo = "FOTO_COMERCIO_" + System.currentTimeMillis() + ".jpg";
         File archivoDestino = new File(carpeta, nombreArchivo);
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Herramienta Censador</string>
     <!--  Copyrigth  -->
@@ -65,6 +66,14 @@
     <string name="visitar_ubicacion">Visitar ubicación</string>
     <string name="galeria">Galería</string>
     <string name="actualizar">Actualizar</string>
+
+    <!-- Seguimientos -->
+    <string name="registrar_seguimiento">Registrar seguimiento</string>
+    <string name="comentarios">Comentarios</string>
+    <string name="seleccionar_estado_venta">Seleccionar estado de venta</string>
+    <string name="titulo_seguimiento">Seguimiento de Visita</string>
+    <string name="datos_cliente">Datos del Cliente</string>
+    <string name="buscar_por_nombre">Buscar por nombre...</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

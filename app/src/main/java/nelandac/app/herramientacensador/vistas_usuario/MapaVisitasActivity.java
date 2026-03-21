@@ -19,49 +19,47 @@ import nelandac.app.herramientacensador.modelos.Visita;
 import nelandac.app.herramientacensador.modelos.VisitaDAO;
 
 /**
- * Clase MapaVisitasActivity
+ * Inteligencia Geográfica: MapaVisitasActivity
  * 
- * Esta actividad proporciona una interfaz geográfica utilizando el SDK de Google Maps para Android.
- * Su propósito principal es visualizar la ubicación de los puntos de interés (visitas) mediante
- * marcadores interactivos. Soporta la visualización de un registro individual o la carga masiva
- * de registros históricos con capacidades de filtrado temporal.
+ * Esta actividad encapsula la lógica de visualización geoespacial de la cartera de clientes.
+ * Provee una interfaz interactiva basada en Google Maps SDK, permitiendo la localización 
+ * precisa de puntos comerciales y el análisis de cobertura mediante marcadores dinámicos.
+ * 
+ * Capacidades Senior:
+ * - Renderizado dual: Vista de foco único (un cliente) o vista de conjunto (cartera completa).
+ * - Integración de filtros temporales sobre la capa de datos geográficos.
+ * - Gestión de permisos de ubicación de alta precisión en tiempo de ejecución.
  */
 public class MapaVisitasActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    // Instancia del controlador de Google Maps
+    /** Controlador maestro de la instancia del mapa. */
     private GoogleMap mMap;
     
-    // Objeto de acceso a datos para recuperación de registros geolocalizados
+    /** Capa de persistencia para la recuperación de coordenadas. */
     private VisitaDAO dao;
     
-    // Componentes de la interfaz para el control de capas de datos
+    /** Controles de UI para la segmentación de datos en el mapa. */
     private Chip chipTodo, chipHoy;
 
-    /**
-     * Ciclo de vida: onCreate
-     * Inicializa la interfaz de usuario, los componentes de datos y el fragmento del mapa.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa_visitas);
 
-        // Vinculación de componentes de filtrado
+        // Vinculación de componentes de filtrado dinámico
         chipHoy = findViewById(R.id.chipHoyMapa);
         chipTodo = findViewById(R.id.chipTodoMapa);
         
-        // Inicialización de la capa de persistencia
         dao = new VisitaDAO(this);
 
         /**
-         * Listeners para el filtrado dinámico de marcadores en el mapa.
-         * Realizan una limpieza de la capa visual y recargan los datos según el criterio seleccionado.
+         * Listeners de filtrado:
+         * Ejecutan un barrido de la capa visual (mMap.clear) antes de repoblar con el nuevo subconjunto.
          */
         chipHoy.setOnClickListener(v -> cargarMarcadores(dao.obtenerHoy()));
-
         chipTodo.setOnClickListener(v -> cargarMarcadores(dao.obtenerVisitas()));
 
-        // Inicialización asíncrona del fragmento de mapa
+        // Inicialización asíncrona del motor de mapas para evitar bloqueos del hilo principal
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getSupportFragmentManager().findFragmentById(R.id.map);
 
@@ -71,18 +69,14 @@ public class MapaVisitasActivity extends FragmentActivity implements OnMapReadyC
     }
 
     /**
-     * Callback onMapReady
-     * Se ejecuta cuando el objeto GoogleMap está disponible para su manipulación.
-     * Configura los parámetros iniciales del mapa, gestiona permisos de ubicación y
-     * determina la lógica de carga inicial basada en los parámetros del Intent.
-     * 
-     * @param googleMap Instancia del mapa configurado.
+     * Punto de configuración del mapa una vez cargado el motor.
+     * Gestiona la habilitación de capas de ubicación y el posicionamiento inicial de la cámara.
      */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Validación de privilegios de acceso a la ubicación del dispositivo en tiempo de ejecución
+        // Verificación de privilegios de acceso a la ubicación (Fine Location)
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -91,49 +85,35 @@ public class MapaVisitasActivity extends FragmentActivity implements OnMapReadyC
             return;
         }
 
-        // Habilitación de la capa de ubicación propia del usuario y controles de UI
+        // Activación de la capa de ubicación en tiempo real del usuario
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         /**
-         * Lógica de determinación de estado inicial:
-         * El mapa puede ser invocado para mostrar una visita específica o el listado global.
+         * Lógica de enrutamiento inicial:
+         * Determina si se visualiza un solo punto (proviniente de un item) 
+         * o toda la base de datos instalada.
          */
         double lat = getIntent().getDoubleExtra("LAT", 0);
         double lng = getIntent().getDoubleExtra("LNG", 0);
         String nombre = getIntent().getStringExtra("NOMBRE");
 
-        // Caso 1: Visualización de un registro específico (Proviene del adaptador de visitas)
         if (lat != 0 && lng != 0) {
-
+            // Caso: Foco en un cliente específico
             LatLng ubicacion = new LatLng(lat, lng);
-
-            // Generación de marcador único con título identificador
             mMap.addMarker(new MarkerOptions()
                     .position(ubicacion)
                     .title(nombre));
 
-            // Transición de cámara con nivel de zoom de alta proximidad
+            // Posicionamiento de cámara con nivel de zoom urbano (Street Level)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacion, 17));
 
         } else {
-
-            // Caso 2: Carga masiva de registros históricos
+            // Caso: Visualización de cartera completa
+            cargarMarcadores(dao.obtenerVisitas());
+            
+            // Auto-posicionamiento inicial basado en el primer registro disponible
             List<Visita> lista = dao.obtenerVisitas();
-
-            for (Visita v : lista) {
-                // Validación de integridad de coordenadas antes del renderizado del marcador
-                if (v.getLatitud() != 0 && v.getLongitud() != 0) {
-                    LatLng ubicacion = new LatLng(v.getLatitud(), v.getLongitud());
-
-                    mMap.addMarker(new MarkerOptions()
-                            .position(ubicacion)
-                            .title(v.getNombreComercial())
-                            .snippet(v.getTelefono()));
-                }
-            }
-
-            // Establece un punto de inicio visual basado en el primer registro de la colección
             if (!lista.isEmpty()) {
                 Visita primera = lista.get(0);
                 LatLng inicio = new LatLng(primera.getLatitud(), primera.getLongitud());
@@ -143,22 +123,18 @@ public class MapaVisitasActivity extends FragmentActivity implements OnMapReadyC
     }
 
     /**
-     * Gestiona la actualización masiva de la capa de marcadores del mapa.
-     * Realiza una limpieza atómica del estado visual previo antes de iterar sobre la nueva colección.
+     * Orquestador de marcadores dinámicos.
+     * Itera sobre una colección de Visitas y proyecta sus coordenadas en la capa del mapa.
      * 
-     * @param lista Colección de objetos Visita con datos geográficos.
+     * @param lista Colección de registros con integridad geográfica validada.
      */
     private void cargarMarcadores(List<Visita> lista) {
-
-        // Limpieza de todos los marcadores, polilíneas y superposiciones existentes
-        mMap.clear();
+        mMap.clear(); // Saneamiento de la capa visual
 
         for (Visita v : lista) {
-            // Verificación de coordenadas válidas (distintas del origen 0,0)
+            // Validación preventiva de coordenadas 0,0 para evitar marcadores erróneos en el mar
             if (v.getLatitud() != 0 && v.getLongitud() != 0) {
-
                 LatLng pos = new LatLng(v.getLatitud(), v.getLongitud());
-
                 mMap.addMarker(new MarkerOptions()
                         .position(pos)
                         .title(v.getNombreComercial()));

@@ -1,85 +1,119 @@
 package nelandac.app.herramientacensador.modelos;
 
 /**
- * Clase de modelo Visita.
+ * Entidad Maestro: Visita
  * 
- * Representa la entidad de negocio para un registro de censo o visita comercial.
- * Esta clase actúa como un Data Transfer Object (DTO) para el transporte de información
- * entre la interfaz de usuario, la lógica de negocio y la capa de persistencia (SQLite).
- * Contiene atributos detallados del comercio, ubicación geográfica y estados de control.
+ * Esta clase representa la entidad principal de negocio del sistema. Almacena la información 
+ * recolectada durante el censo inicial de un punto comercial o cliente. Actúa como el 
+ * "Maestro de Clientes" sobre el cual se vinculan los eventos de seguimiento.
+ * 
+ * Atributos destacados:
+ * - Identificación comercial y legal completa.
+ * - Datos de geolocalización (Coordenadas, Latitud, Longitud).
+ * - Metadatos de auditoría (Fecha de registro, Usuario/Prospector).
+ * - Estados de control para sincronización futura.
  */
 public class Visita {
 
-    // Identificador único del registro en la base de datos
+    /** Identificador primario autonumérico en la base de datos local. */
     private int id;
     
-    // Información contextual de la ubicación y el responsable
+    /** Contexto geográfico del registro. */
     private String pais;
+    
+    /** Nombre del agente o censador responsable de la captura inicial. */
     private String prospector;
+    
+    /** Categorización jurídica o comercial del cliente. */
     private String tipoCliente;
     
-    // Datos de identificación del establecimiento y el propietario
+    /** Nombre de fantasía o razón social del establecimiento. */
     private String nombreComercial;
+    
+    /** Nombre del contacto principal o propietario legal. */
     private String nombreCliente;
+    
+    /** Documento de identidad legal asociado. */
     private String tipoIdentificacion;
     private String numeroIdentificacion;
     
-    // Datos de geolocalización
+    /** Representación combinada de ubicación (lat,lng) para visualización rápida. */
     private String coordenadas;
+    
+    /** Componentes atómicos de ubicación para integración con Google Maps. */
     private double latitud;
     private double longitud;
     
-    // Información de contacto y clasificación comercial
+    /** Segmentación del giro comercial del punto. */
     private String clasificacionNegocio;
+    
+    /** Canal de comunicación directo. */
     private String telefono;
+    
+    /** Enlace externo pre-generado para navegación GPS. */
     private String linkGoogleMaps;
     
-    // Información técnica y evidencias
+    /** Identificador del bloque o módulo operativo asignado. */
     private String modulo;
+    
+    /** Ruta del recurso multimedia capturado durante el censo inicial. */
     private String fotoNegocio;
     
-    // Planificación y estados de seguimiento
+    /** Planificación de ruta comercial. */
     private String diaVisita;
+    
+    /** Indicador de requerimiento de asistencia técnica/comercial superior. */
     private String solicitaApoyoSupervisor;
+    
+    /** Compromiso de fecha para la próxima gestión. */
     private String fechaCoordinada;
     
-    // Indicadores de perfilamiento de cliente
+    /** Variables de perfilamiento comercial inicial. */
     private String clienteConVenta;
     private String clienteNuevo;
     private String clienteTieneCodigo;
     
-    // Atributos de control de sistema
+    /** 
+     * Control de integridad: 
+     * 0 = Local, 1 = Sincronizado con servidor remoto.
+     */
     private int estadoSync;
+    
+    /** Marca de tiempo de creación del registro en el dispositivo (Hora Local). */
     private String fechaRegistro;
 
     /**
-     * Constructor parametrizado para la instanciación completa de un objeto Visita.
-     * Utilizado principalmente al recuperar registros existentes desde la base de datos.
-     * 
-     * @param id Identificador único
-     * @param pais País de origen
-     * @param prospector Nombre del censador
-     * @param tipoCliente Clasificación del cliente
-     * @param nombreComercial Nombre del establecimiento
-     * @param nombreCliente Nombre del titular
-     * @param tipoIdentificacion Tipo de documento legal
-     * @param numeroIdentificacion Número de documento legal
-     * @param coordenadas Representación String de ubicación (lat,lng)
-     * @param latitud Valor numérico de latitud
-     * @param longitud Valor numérico de longitud
-     * @param clasificacionNegocio Giro del negocio
-     * @param telefono Número de contacto
-     * @param linkGoogleMaps Enlace externo de ubicación
-     * @param modulo Módulo asignado
-     * @param fotoNegocio Ruta local de la evidencia fotográfica
-     * @param diaVisita Día programado
-     * @param solicitaApoyoSupervisor Indicador de requerimiento de supervisión
-     * @param fechaCoordinada Fecha pactada para la visita
-     * @param clienteConVenta Estado de venta actual
-     * @param clienteNuevo Indicador de nuevo registro
-     * @param clienteTieneCodigo Estado de código interno
-     * @param estadoSync Estado de sincronización con el servidor remoto
-     * @param fechaRegistro Marca de tiempo de creación del registro
+     * Constructor para inicialización de registros nuevos desde el formulario.
+     */
+    public Visita() {
+        this.id = 0;
+        this.pais = "";
+        this.prospector = "";
+        this.tipoCliente = "";
+        this.nombreComercial = "";
+        this.nombreCliente = "";
+        this.tipoIdentificacion = "";
+        this.numeroIdentificacion = "";
+        this.coordenadas = "";
+        this.latitud = 0.0;
+        this.longitud = 0.0;
+        this.clasificacionNegocio = "";
+        this.telefono = "";
+        this.linkGoogleMaps = "";
+        this.modulo = "";
+        this.fotoNegocio = "";
+        this.diaVisita = "";
+        this.solicitaApoyoSupervisor = "";
+        this.fechaCoordinada = "";
+        this.clienteConVenta = "";
+        this.clienteNuevo = "";
+        this.clienteTieneCodigo = "";
+        this.estadoSync = 0;
+        this.fechaRegistro = "";
+    }
+
+    /**
+     * Constructor integral para la reconstrucción del modelo desde la persistencia SQLite.
      */
     public Visita(int id, String pais, String prospector, String tipoCliente,
                   String nombreComercial, String nombreCliente, String tipoIdentificacion,
@@ -115,40 +149,7 @@ public class Visita {
         this.fechaRegistro = fechaRegistro;
     }
 
-    /**
-     * Constructor predeterminado.
-     * Inicializa los atributos con valores por defecto para evitar punteros nulos durante
-     * el proceso de carga de formularios nuevos.
-     */
-    public Visita() {
-        this.id = 0;
-        this.pais = "";
-        this.prospector = "";
-        this.tipoCliente = "";
-        this.nombreComercial = "";
-        this.nombreCliente = "";
-        this.tipoIdentificacion = "";
-        this.numeroIdentificacion = "";
-        this.coordenadas = "";
-        this.latitud = 0.0;
-        this.longitud = 0.0;
-        this.clasificacionNegocio = "";
-        this.telefono = "";
-        this.linkGoogleMaps = "";
-        this.modulo = "";
-        this.fotoNegocio = "";
-        this.diaVisita = "";
-        this.solicitaApoyoSupervisor = "";
-        this.fechaCoordinada = "";
-        this.clienteConVenta = "";
-        this.clienteNuevo = "";
-        this.clienteTieneCodigo = "";
-        this.estadoSync = 0;
-        this.fechaRegistro = "";
-    }
-
-    // Métodos de acceso (Getters y Setters)
-    // Implementan la encapsulación de los datos de la clase.
+    // Métodos de acceso (Getters y Setters) encapsulados
 
     public int getId() {
         return id;
