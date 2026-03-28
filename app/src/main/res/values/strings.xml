@@ -74,6 +74,7 @@
     <string name="titulo_seguimiento">Seguimiento de Visita</string>
     <string name="datos_cliente">Datos del Cliente</string>
     <string name="buscar_por_nombre">Buscar por nombre...</string>
+    <string name="fecha_no_requerida">00/00/0000</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">
@@ -161,6 +162,7 @@
         <item>Bar</item>
         <item>Bar/Restaurante</item>
         <item>Panadería/Pastelería</item>
+        <item>Panadería/Soda</item>
         <item>Gimnasio</item>
         <item>Ferretería</item>
         <item>Farmacia</item>

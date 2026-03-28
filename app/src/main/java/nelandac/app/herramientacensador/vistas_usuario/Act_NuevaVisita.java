@@ -280,6 +280,30 @@ public class Act_NuevaVisita extends AppCompatActivity {
         
         // Despliegue del selector de fecha al interactuar con el campo correspondiente
         txvFechaSupervisor.setOnClickListener(v -> mostrarDatePicker());
+
+        spinApoySupervisor.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                String valor = parent.getItemAtPosition(position).toString();
+
+                if (valor.equalsIgnoreCase("No")) {
+                    txvFechaSupervisor.setText(R.string.fecha_no_requerida);
+                    txvFechaSupervisor.setEnabled(false);
+                    txvFechaSupervisor.setFocusable(false);
+                    txvFechaSupervisor.setClickable(false);
+                } else {
+                    txvFechaSupervisor.setText("");
+                    txvFechaSupervisor.setEnabled(true);
+                    txvFechaSupervisor.setFocusable(true);
+                    txvFechaSupervisor.setClickable(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                // No aplica
+            }
+        });
     }
 
     /**

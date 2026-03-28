@@ -1,5 +1,9 @@
 package nelandac.app.herramientacensador.modelos;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Entidad Maestro: Visita
  * 
@@ -341,5 +345,19 @@ public class Visita {
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getFechaRegistroSoloFecha() {
+        try {
+            SimpleDateFormat formatoEntrada = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            SimpleDateFormat formatoSalida = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            Date fecha = formatoEntrada.parse(this.fechaRegistro);
+            return formatoSalida.format(fecha);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return this.fechaRegistro; // fallback
+        }
     }
 }

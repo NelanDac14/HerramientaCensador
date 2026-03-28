@@ -222,7 +222,7 @@ public class ListaVisitasActivity extends AppCompatActivity {
     /** Carga inicial del histórico completo y configuración del adaptador. */
     private void cargarDatosIniciales() {
         VisitaDAO dao = new VisitaDAO(this);
-        listaFull = dao.obtenerVisitas();
+        listaFull = dao.obtenerHoy();
         listaFiltrada = new ArrayList<>(listaFull);
         
         adapter = new VisitasAdapter(this, listaFiltrada, new VisitasAdapter.OnItemActionListener() {
@@ -250,7 +250,9 @@ public class ListaVisitasActivity extends AppCompatActivity {
         try {
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("Visitas");
-            String[] headers = {"ID", "Pais", "Prospector", "Tipo Cliente", "Nombre Comercial", "Nombre Cliente", "Teléfono", "Día Visita", "Fecha Registro"};
+            //String[] headers = {"ID", "Pais", "Prospector", "Tipo Cliente", "Nombre Comercial", "Nombre Cliente", "Teléfono", "Día Visita", "Fecha Registro"};
+            String[] headers = {"ID", "Nombre Comercial", "Nombre Cliente", "Tipo Cliente", "Identificación", "Dirección Coordenadas", "Clas. Negocio",
+                    "Teléfono", "Link Google Maps", "Día Visita", "¿Venta?", "¿Alta?", "¿Código?", "Fecha Registro"};
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) headerRow.createCell(i).setCellValue(headers[i]);
 
@@ -258,14 +260,19 @@ public class ListaVisitasActivity extends AppCompatActivity {
             for (Visita v : listaFiltrada) { 
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(v.getId());
-                row.createCell(1).setCellValue(v.getPais());
-                row.createCell(2).setCellValue(v.getProspector());
+                row.createCell(1).setCellValue(v.getNombreComercial());
+                row.createCell(2).setCellValue(v.getNombreCliente());
                 row.createCell(3).setCellValue(v.getTipoCliente());
-                row.createCell(4).setCellValue(v.getNombreComercial());
-                row.createCell(5).setCellValue(v.getNombreCliente());
-                row.createCell(6).setCellValue(v.getTelefono());
-                row.createCell(7).setCellValue(v.getDiaVisita());
-                row.createCell(8).setCellValue(v.getFechaRegistro());
+                row.createCell(4).setCellValue(v.getNumeroIdentificacion());
+                row.createCell(5).setCellValue(v.getCoordenadas());
+                row.createCell(6).setCellValue(v.getClasificacionNegocio());
+                row.createCell(7).setCellValue(v.getTelefono());
+                row.createCell(8).setCellValue(v.getLinkGoogleMaps());
+                row.createCell(9).setCellValue(v.getDiaVisita());
+                row.createCell(10).setCellValue(v.getClienteConVenta());
+                row.createCell(11).setCellValue(v.getClienteNuevo());
+                row.createCell(12).setCellValue(v.getClienteTieneCodigo());
+                row.createCell(13).setCellValue(v.getFechaRegistroSoloFecha());
             }
 
             File carpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "HerramientaCensador");
