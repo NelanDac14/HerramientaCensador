@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    Layout: activity_lista_visitas.xml
-    Responsabilidad: Define la interfaz de usuario para la visualización y gestión del historial de visitas.
-    Estructura: Utiliza un ConstraintLayout como base para organizar una barra de filtros dinámica (Chips),
-    un listado de alto rendimiento (RecyclerView) y botones de acción flotantes (FAB) para exportación y mapas.
--->
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--
-        Barra de Filtros:
-        Permite al usuario segmentar la información por criterios temporales.
-    -->
+    <!-- 🔥 TOOLBAR (CLAVE) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/listaVisitas_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/toolbarColor"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/lista_de_visitas"
+        app:titleTextColor="@color/white" />
+
+    <!-- Filtros -->
     <HorizontalScrollView
         android:id="@+id/scrollFiltros"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
+        android:minHeight="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/listaVisitas_toolbar">
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupFiltros"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_gravity="center"
+            android:padding="5dp"
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
@@ -37,6 +42,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:text="@string/hoy" />
 
             <com.google.android.material.chip.Chip
@@ -44,6 +50,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:text="@string/fecha" />
 
             <com.google.android.material.chip.Chip
@@ -51,6 +58,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:text="@string/mes" />
 
             <com.google.android.material.chip.Chip
@@ -58,6 +66,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:text="@string/ano" />
 
             <com.google.android.material.chip.Chip
@@ -65,72 +74,48 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="50dp"
                 android:text="@string/todo" />
 
-        </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAltas"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/altas" />
 
+        </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
-    <!-- Barra de Búsqueda por Nombre -->
+    <!-- Buscador -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilBuscar"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_margin="16dp"
         android:hint="@string/buscar_por_nombre"
-        app:boxCornerRadiusBottomEnd="12dp"
-        app:boxCornerRadiusBottomStart="12dp"
-        app:boxCornerRadiusTopEnd="12dp"
-        app:boxCornerRadiusTopStart="12dp"
-        app:boxStrokeColor="#006F84"
-        app:endIconMode="clear_text"
-        app:layout_constraintTop_toBottomOf="@id/scrollFiltros"
-        app:startIconDrawable="@android:drawable/ic_menu_search">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollFiltros">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtBuscar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
+            android:minHeight="50dp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Listado de Visitas -->
+    <!-- Lista -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerVisitas"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
         android:padding="8dp"
-        android:paddingBottom="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilBuscar" />
-
-    <!-- BOTÓN EXPORTAR EXCEL -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabExportarExcel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:contentDescription="@string/exportar_excel"
-        android:src="@android:drawable/ic_menu_save"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabMapa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="150dp"
-        android:contentDescription="@string/ver_mapa"
-        android:src="@android:drawable/ic_dialog_map"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

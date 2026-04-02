@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import nelandac.app.herramientacensador.modelos.VisitaDAO;
 import nelandac.app.herramientacensador.vistas_usuario.Act_NuevaVisita;
 import nelandac.app.herramientacensador.vistas_usuario.ListaVisitasActivity;
 
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
         // Habilitación de renderizado Edge-to-Edge para modernización de la UI
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        //Genera el uuid si no existe
+        VisitaDAO dao = new VisitaDAO(this);
+        dao.generarUUIDsFaltantes();
 
         /**
          * Solicitud de permisos en tiempo de ejecución.

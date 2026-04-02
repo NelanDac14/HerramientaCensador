@@ -66,6 +66,7 @@
     <string name="visitar_ubicacion">Visitar ubicación</string>
     <string name="galeria">Galería</string>
     <string name="actualizar">Actualizar</string>
+    <string name="sync">Sincronizar</string>
 
     <!-- Seguimientos -->
     <string name="registrar_seguimiento">Registrar seguimiento</string>
@@ -75,6 +76,17 @@
     <string name="datos_cliente">Datos del Cliente</string>
     <string name="buscar_por_nombre">Buscar por nombre...</string>
     <string name="fecha_no_requerida">00/00/0000</string>
+    <string name="subir_datos_sync">Subir datos (Sync)</string>
+    <string name="descargar_datos">Descargar datos</string>
+    <string name="lista_de_visitas">Lista de Visitas</string>
+    <string name="forzar_sincronizacion_completa">Forzar sincronización completa</string>
+    <string name="altas">Altas</string>
+    <string name="observaciones_del_seguimiento">Observaciones del seguimiento</string>
+    <string name="estado_de_venta">Estado de Venta</string>
+    <string name="tomar_foto">Tomar Foto</string>
+    <string name="evidencia_fotografica">Evidencia Fotográfica</string>
+    <string name="nombre_cliente">Nombre cliente</string>
+    <string name="seguimiento">Seguimiento</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

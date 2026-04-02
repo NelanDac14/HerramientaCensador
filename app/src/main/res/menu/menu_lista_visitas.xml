@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_sync_subir"
+        android:title="@string/subir_datos_sync"
+        android:icon="@android:drawable/stat_sys_upload" />
+
+    <item
+        android:id="@+id/menu_sync_descargar"
+        android:title="@string/descargar_datos"
+        android:icon="@android:drawable/stat_sys_download" />
+
+    <item
+        android:id="@+id/menu_mapa"
+        android:title="@string/ver_mapa"
+        android:icon="@android:drawable/ic_menu_mapmode" />
+
+    <item
+        android:id="@+id/menu_exportar"
+        android:title="@string/exportar_excel"
+        android:icon="@android:drawable/ic_menu_save" />
+
+    <item
+        android:id="@+id/menu_reset_sync"
+        android:title="@string/forzar_sincronizacion_completa" />
+
+</menu>

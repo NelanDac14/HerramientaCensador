@@ -18,6 +18,7 @@ import java.util.Locale;
  * - Estados de control para sincronización futura.
  */
 public class Visita {
+    private String uuid;
 
     /** Identificador primario autonumérico en la base de datos local. */
     private int id;
@@ -114,6 +115,9 @@ public class Visita {
         this.clienteTieneCodigo = "";
         this.estadoSync = 0;
         this.fechaRegistro = "";
+        if ((this.uuid == null) || this.uuid.isEmpty()) {
+            this.uuid = java.util.UUID.randomUUID().toString();
+        }
     }
 
     /**
@@ -151,6 +155,9 @@ public class Visita {
         this.clienteTieneCodigo = clienteTieneCodigo;
         this.estadoSync = estadoSync;
         this.fechaRegistro = fechaRegistro;
+        if ((this.uuid == null) || this.uuid.isEmpty()) {
+            this.uuid = java.util.UUID.randomUUID().toString();
+        }
     }
 
     // Métodos de acceso (Getters y Setters) encapsulados
@@ -345,6 +352,14 @@ public class Visita {
 
     public void setFechaRegistro(String fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getFechaRegistroSoloFecha() {

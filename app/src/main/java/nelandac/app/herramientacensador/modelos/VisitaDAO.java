@@ -30,6 +30,7 @@ public class VisitaDAO {
     private Visita mapCursorToVisita(Cursor cursor) {
         Visita v = new Visita();
 
+        v.setUuid(cursor.getString(cursor.getColumnIndexOrThrow("uuid")));
         v.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
         v.setPais(cursor.getString(cursor.getColumnIndexOrThrow("pais")));
         v.setProspector(cursor.getString(cursor.getColumnIndexOrThrow("prospector")));
@@ -62,6 +63,13 @@ public class VisitaDAO {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
+        // 🔥 ASEGURAR UUID SIEMPRE
+        if (visita.getUuid() == null || visita.getUuid().isEmpty()) {
+            visita.setUuid(java.util.UUID.randomUUID().toString());
+        }
+
+        values.put("uuid", visita.getUuid());
+
         values.put("pais", visita.getPais());
         values.put("prospector", visita.getProspector());
         values.put("tipo_cliente", visita.getTipoCliente());
@@ -87,6 +95,13 @@ public class VisitaDAO {
         values.put("fecha_registro", getLocalTimestamp());
 
         long resultado = db.insert("visitas", null, values);
+
+        if (resultado == -1) {
+            android.util.Log.e("DB", "❌ ERROR INSERT VISITA");
+        } else {
+            android.util.Log.d("DB", "✅ VISITA INSERTADA ID: " + resultado);
+        }
+
         db.close();
         return resultado;
     }
@@ -281,4 +296,124 @@ public class VisitaDAO {
         db.close();
         return lista;
     }
+
+    public List<Visita> obtenerPendientesSync() {
+        List<Visita> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM visitas WHERE estado_sync = 0", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(mapCursorToVisita(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return lista;
+    }
+
+    public void marcarComoSincronizado(int id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("estado_sync", 1);
+
+        db.update("visitas", values, "id=?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    public List<Seguimiento> obtenerSeguimientosPorVisita(int idVisita) {
+        List<Seguimiento> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM bitacora WHERE id_visita_maestro = ? ORDER BY fecha_seguimiento DESC",
+                new String[]{String.valueOf(idVisita)}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Seguimiento s = new Seguimiento();
+                s.setIdSeguimiento(cursor.getInt(cursor.getColumnIndexOrThrow("id_seguimiento")));
+                s.setIdVisitaMaestro(cursor.getInt(cursor.getColumnIndexOrThrow("id_visita_maestro")));
+                s.setFechaSeguimiento(cursor.getString(cursor.getColumnIndexOrThrow("fecha_seguimiento")));
+                s.setFotoSeguimiento(cursor.getString(cursor.getColumnIndexOrThrow("foto_seguimiento")));
+                s.setComentarios(cursor.getString(cursor.getColumnIndexOrThrow("comentarios")));
+                s.setEstadoVenta(cursor.getString(cursor.getColumnIndexOrThrow("estado_venta")));
+                lista.add(s);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return lista;
+    }
+
+    public boolean existeVisitaPorUUID(String uuid) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM visitas WHERE uuid = ? LIMIT 1",
+                new String[]{uuid}
+        );
+
+        boolean existe = cursor.moveToFirst();
+
+        cursor.close();
+        db.close();
+
+        return existe;
+    }
+
+    public void resetearSync() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("UPDATE visitas SET estado_sync = 0");
+        db.close();
+    }
+
+    public void generarUUIDsFaltantes() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT id FROM visitas WHERE uuid IS NULL OR uuid = ''", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(0);
+                String uuid = java.util.UUID.randomUUID().toString();
+
+                ContentValues values = new ContentValues();
+                values.put("uuid", uuid);
+
+                db.update("visitas", values, "id=?", new String[]{String.valueOf(id)});
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+    }
+
+    public List<Visita> obtenerAltas() {
+        List<Visita> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM visitas WHERE cliente_nuevo = 'Sí'",
+                null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(mapCursorToVisita(cursor));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
 }

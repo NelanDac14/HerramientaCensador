@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
  */
 public class BaseDatos extends SQLiteOpenHelper {
 
-    public static int dataBaseVersion = 4;
+    public static int dataBaseVersion = 5;
     public static String dataBaseName = "DataBaseHCensador";
 
     public BaseDatos(@Nullable Context context) {
@@ -30,6 +30,7 @@ public class BaseDatos extends SQLiteOpenHelper {
 
     public static final String CREATE_TABLE_VISITAS =
             "CREATE TABLE visitas (" +
+                    "uuid TEXT UNIQUE,"+
                     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "pais TEXT," +
                     "prospector TEXT," +
@@ -74,19 +75,39 @@ public class BaseDatos extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        // En un entorno de desarrollo, si el esquema ha sido inestable, 
-        // recreamos las tablas críticas para asegurar la nueva estructura de tiempo y cascada.
-        if (oldVersion < 4) {
-            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS bitacora");
-            sqLiteDatabase.execSQL(CREATE_TABLE_BITACORA);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-            // Verificamos si la columna fecha_registro existe en visitas, si no, la añadimos
+        // 🔥 MIGRACIÓN A VERSIONES NUEVAS
+        if (oldVersion < 4) {
+
+            // Recrear bitácora (como ya tenías)
+            db.execSQL("DROP TABLE IF EXISTS bitacora");
+            db.execSQL(CREATE_TABLE_BITACORA);
+
+            // Columna fecha_registro (si no existe)
             try {
-                sqLiteDatabase.execSQL("ALTER TABLE visitas ADD COLUMN fecha_registro DATETIME DEFAULT (DATETIME('now', 'localtime'))");
+                db.execSQL("ALTER TABLE visitas ADD COLUMN fecha_registro DATETIME DEFAULT (DATETIME('now', 'localtime'))");
             } catch (Exception e) {
-                // La columna ya existe
+                android.util.Log.d("DB", "fecha_registro ya existe");
             }
+        }
+
+        // 🔥 NUEVO: AGREGAR UUID
+        if (oldVersion < 5) {
+            try {
+                db.execSQL("ALTER TABLE visitas ADD COLUMN uuid TEXT");
+                android.util.Log.d("DB", "✅ Columna uuid agregada");
+            } catch (Exception e) {
+                android.util.Log.d("DB", "uuid ya existe o error: " + e.getMessage());
+            }
+        }
+    }
+
+    private void agregarColumnaUUID(SQLiteDatabase db) {
+        try {
+            db.execSQL("ALTER TABLE visitas ADD COLUMN uuid TEXT");
+        } catch (Exception e) {
+            android.util.Log.d("DB", "UUID ya existe o error: " + e.getMessage());
         }
     }
 }

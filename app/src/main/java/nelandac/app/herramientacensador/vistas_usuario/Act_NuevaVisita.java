@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.exifinterface.media.ExifInterface;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -57,19 +59,19 @@ import nelandac.app.herramientacensador.modelos.VisitaDAO;
 
 /**
  * Clase Act_NuevaVisita
- * 
+ * <p>
  * Esta actividad gestiona el ciclo de vida de la creación y edición de registros de visitas.
  * Implementa funcionalidades críticas como la obtención de geolocalización mediante Google Play Services,
  * captura de imágenes mediante la cámara del sistema e integración con la galería del dispositivo.
- * 
+ * <p>
  * La clase sigue un patrón de diseño imperativo para la gestión de la interfaz de usuario (UI)
  * y utiliza un objeto de acceso a datos (DAO) para la persistencia en una base de datos local SQLite.
  */
 public class Act_NuevaVisita extends AppCompatActivity {
-    
+
     // Declaración de componentes de la interfaz de usuario
     private Toolbar toolbar;
-    
+
     // Selectores para datos categóricos
     private Spinner spinPais, spinProspector, spinTipoCliente,
             spinTipIdentificacion, spinClasComercio, spinDiaVisita,
@@ -82,44 +84,44 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     // Visualización de la imagen capturada o seleccionada
     private ImageView imgFotoComercio;
-    
+
     // Botones de acción principal
     private Button btnObtener, btnGuardar, btnFotoComercio, btnAgregarFoto;
 
     // Cliente para servicios de ubicación de Google Play
     private FusedLocationProviderClient fusedLocationClient;
-    
+
     // Variables para la gestión de archivos y rutas de imágenes
     private Uri photoUri;
     private String rutaFotoActual;
-    
+
     // Lanzadores para resultados de actividades externas (Cámara y Galería)
     private ActivityResultLauncher<Uri> cameraLauncher;
     private ActivityResultLauncher<String> galeriaLauncher;
-    
+
     // Variables de control de estado para el modo edición
     private int visitaId = -1;
     private int position = -1;
 
     /**
-     * Punto de entrada de la actividad. 
+     * Punto de entrada de la actividad.
      * Configura el entorno visual, inicializa servicios y registra los callbacks de los ActivityResultLaunchers.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Habilitación de renderizado de borde a borde para una experiencia visual inmersiva
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_act_nueva_visita);
-        
+
         // Inicialización del cliente de ubicación
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        
+
         // Inicialización de componentes y eventos
         iniVistas();
         initListeners();
-        
+
         // Recuperación de parámetros pasados por el Intent para determinar si es creación o actualización
         visitaId = getIntent().getIntExtra("VISITA_ID", -1);
         position = getIntent().getIntExtra("POSITION", -1);
@@ -129,7 +131,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
             cargarDatos(visitaId);
             btnGuardar.setText(R.string.actualizar);
         }
-        
+
         /**
          * Registro del contrato para la captura de fotografía desde la cámara.
          * En caso de éxito, actualiza la UI con la ruta del archivo y previsualiza la imagen.
@@ -166,9 +168,15 @@ public class Act_NuevaVisita extends AppCompatActivity {
                     if (uri != null) {
                         try {
                             String ruta = copiarImagenAGaleriaLocal(uri);
+
+                            // 🔥 ESTA LÍNEA ES LA CLAVE
+                            rutaFotoActual = ruta;
+
                             txvFotoComercio.setText(ruta);
                             imgFotoComercio.setImageURI(Uri.fromFile(new File(ruta)));
+
                             Toast.makeText(this, "Imagen seleccionada", Toast.LENGTH_SHORT).show();
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(this, "Error al copiar imagen", Toast.LENGTH_SHORT).show();
@@ -192,7 +200,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         // Configuración del ToolBar como ActionBar de la actividad
         toolbar = findViewById(R.id.nueVisita_toolbar);
         setSupportActionBar(toolbar);
-        
+
         // Mapeo de selectores (Spinners)
         spinPais = findViewById(R.id.spinPaises);
         spinProspector = findViewById(R.id.spinProspector);
@@ -204,7 +212,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         spinVenta = findViewById(R.id.spinClieVenta);
         spinClieNuevo = findViewById(R.id.spinClieNuevo);
         spinCodigo = findViewById(R.id.spinClieCodigo);
-        
+
         // Mapeo de campos de texto (EditText)
         txvNombComercial = findViewById(R.id.edtNombComercial);
         txvNombCliente = findViewById(R.id.edtNombCliente);
@@ -215,7 +223,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         txvModulo = findViewById(R.id.edtModuloVisita);
         txvFotoComercio = findViewById(R.id.edtFotoComercio);
         txvFechaSupervisor = findViewById(R.id.edtFechaApoyo);
-        
+
         // Mapeo de vistas de imagen y botones
         imgFotoComercio = findViewById(R.id.imgFotoComercio);
         btnObtener = findViewById(R.id.btnNVObtCoordenadas);
@@ -226,6 +234,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     /**
      * Ejecuta la lógica de validación de negocio sobre los campos obligatorios del formulario.
+     *
      * @return true si todos los campos cumplen con los requisitos mínimos; false en caso contrario.
      */
     private boolean validarCamposVisita() {
@@ -271,13 +280,13 @@ public class Act_NuevaVisita extends AppCompatActivity {
         btnGuardar.setOnClickListener(v -> guardarVisita());
         btnObtener.setOnClickListener(v -> obtenerCoordenadas());
         btnFotoComercio.setOnClickListener(v -> tomarFotoComercio());
-        
+
         // Acción de pulsación larga para abrir la galería
         btnAgregarFoto.setOnLongClickListener(v -> {
             galeriaLauncher.launch("image/*");
             return true;
         });
-        
+
         // Despliegue del selector de fecha al interactuar con el campo correspondiente
         txvFechaSupervisor.setOnClickListener(v -> mostrarDatePicker());
 
@@ -310,50 +319,130 @@ public class Act_NuevaVisita extends AppCompatActivity {
      * Gestiona la lógica para establecer la ubicación geográfica.
      * Prioriza la generación de un enlace de Google Maps a partir de coordenadas existentes,
      * o solicita la ubicación actual del dispositivo si el campo está vacío.
+     * Orquestador inteligente de obtención de coordenadas.
+     * <p>
+     * Estrategia:
+     * 1. Intentar obtener coordenadas desde metadatos EXIF de la imagen.
+     * 2. Si falla, usar coordenadas ya ingresadas manualmente.
+     * 3. Como último recurso, obtener ubicación GPS del dispositivo.
+     * <p>
+     * Este enfoque garantiza resiliencia ante diferentes fuentes de datos.
      */
     private void obtenerCoordenadas() {
-        String coordenadasActuales = txvCoordenadas.getText().toString().trim();
 
-        // Caso en el que el registro ya cuenta con coordenadas: se genera el enlace externo
-        if (!coordenadasActuales.isEmpty() && coordenadasActuales.contains(",")) {
-            String[] latLng = coordenadasActuales.split(",");
-            if (latLng.length == 2) {
-                String lat = latLng[0];
-                String lng = latLng[1];
-                String linkMaps = "https://maps.google.com/?q=" + lat + "," + lng;
-                txvLinkGoogle.setText(linkMaps);
-                Toast.makeText(this, "Link generado desde coordenadas existentes", Toast.LENGTH_SHORT).show();
-                return;
+        Log.d("COORD_FLOW", "Iniciando obtención de coordenadas...");
+        Log.d("COORD_FLOW", "Ruta actual imagen: " + rutaFotoActual);
+
+        // =====================================================
+        // 🔥 1. INTENTO DESDE IMAGEN (EXIF)
+        // =====================================================
+        if (rutaFotoActual != null && !rutaFotoActual.isEmpty()) {
+
+            File file = new File(rutaFotoActual);
+
+            if (file.exists()) {
+
+                try {
+                    ExifInterface exif = new ExifInterface(rutaFotoActual);
+
+                    // 🔍 DEBUG PROFUNDO EXIF
+                    String latRaw = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                    String lngRaw = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+
+                    Log.d("EXIF_DEBUG", "LAT RAW: " + latRaw);
+                    Log.d("EXIF_DEBUG", "LNG RAW: " + lngRaw);
+
+                    float[] latLong = new float[2];
+
+                    if (exif.getLatLong(latLong)) {
+
+                        double lat = latLong[0];
+                        double lng = latLong[1];
+
+                        String coordenadas = lat + "," + lng;
+
+                        txvCoordenadas.setText(coordenadas);
+                        txvLinkGoogle.setText("https://maps.google.com/?q=" + coordenadas);
+
+                        Toast.makeText(this, "📸 Coordenadas obtenidas desde la imagen", Toast.LENGTH_LONG).show();
+
+                        Log.d("COORD_FLOW", "EXIF OK → " + coordenadas);
+
+                        return;
+                    } else {
+                        Log.w("COORD_FLOW", "Imagen sin datos GPS en EXIF");
+                        Toast.makeText(this, "⚠️ Imagen sin coordenadas GPS", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    Log.e("COORD_FLOW", "Error leyendo EXIF", e);
+                    Toast.makeText(this, "Error leyendo metadatos de imagen", Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Log.e("COORD_FLOW", "Archivo NO existe: " + rutaFotoActual);
             }
         }
 
-        // Verificación de permisos de ubicación en tiempo de ejecución
+        // =====================================================
+        // 🔥 2. COORDENADAS EXISTENTES EN UI
+        // =====================================================
+        String coordenadasActuales = txvCoordenadas.getText().toString().trim();
+
+        if (!coordenadasActuales.isEmpty() && coordenadasActuales.contains(",")) {
+
+            try {
+                String[] latLng = coordenadasActuales.split(",");
+
+                String lat = latLng[0].trim();
+                String lng = latLng[1].trim();
+
+                txvLinkGoogle.setText("https://maps.google.com/?q=" + lat + "," + lng);
+
+                Toast.makeText(this, "🔗 Link generado desde coordenadas existentes", Toast.LENGTH_SHORT).show();
+
+                Log.d("COORD_FLOW", "USANDO COORDENADAS MANUALES → " + lat + "," + lng);
+
+                return;
+
+            } catch (Exception e) {
+                Log.e("COORD_FLOW", "Error parseando coordenadas manuales", e);
+            }
+        }
+
+        // =====================================================
+        // 🔥 3. FALLBACK GPS
+        // =====================================================
+        Log.d("COORD_FLOW", "Usando GPS como fallback...");
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            
+
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-            Toast.makeText(this, "Se necesita permiso de ubicación", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Permiso de ubicación requerido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Solicitud de ubicación de alta precisión mediante Fused Location Provider
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(location -> {
                     if (location != null) {
-                        double latitud = location.getLatitude();
-                        double longitud = location.getLongitude();
-                        String coordenadas = latitud + "," + longitud;
-                        txvCoordenadas.setText(coordenadas);
 
-                        String linkMaps = "https://maps.google.com/?q=" + latitud + "," + longitud;
-                        txvLinkGoogle.setText(linkMaps);
-                        Toast.makeText(this, "Ubicación obtenida correctamente", Toast.LENGTH_SHORT).show();
+                        double lat = location.getLatitude();
+                        double lng = location.getLongitude();
+
+                        String coordenadas = lat + "," + lng;
+
+                        txvCoordenadas.setText(coordenadas);
+                        txvLinkGoogle.setText("https://maps.google.com/?q=" + coordenadas);
+
+                        Toast.makeText(this, "📍 Coordenadas obtenidas por GPS", Toast.LENGTH_SHORT).show();
+
+                        Log.d("COORD_FLOW", "GPS OK → " + coordenadas);
+
                     } else {
-                        Toast.makeText(this, "No se pudo obtener la ubicación. Active el GPS.", Toast.LENGTH_LONG).show();
+                        Log.e("COORD_FLOW", "GPS devolvió null");
+                        Toast.makeText(this, "❌ No se pudo obtener ubicación", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error obteniendo ubicación: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -398,6 +487,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     /**
      * Mapea los valores de la interfaz de usuario a una instancia del modelo de datos Visita.
+     *
      * @return Objeto Visita con la información recolectada del formulario.
      */
     private Visita obtenerDatosFormulario() {
@@ -430,7 +520,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
         visita.setClienteConVenta(spinVenta.getSelectedItem().toString());
         visita.setClienteNuevo(spinClieNuevo.getSelectedItem().toString());
         visita.setClienteTieneCodigo(spinCodigo.getSelectedItem().toString());
-        
+
         // Estado por defecto para sincronización posterior
         visita.setEstadoSync(0);
 
@@ -441,7 +531,13 @@ public class Act_NuevaVisita extends AppCompatActivity {
      * Inicia el flujo de captura de imagen.
      * Verifica permisos de cámara y genera un URI seguro mediante FileProvider para la comunicación con la app de cámara.
      */
+    /**
+     * Inicia captura de imagen asegurando persistencia de ruta absoluta.
+     * Este método garantiza que rutaFotoActual siempre esté disponible
+     * para procesos posteriores como EXIF o subida a servidor.
+     */
     private void tomarFotoComercio() {
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 101);
             return;
@@ -449,23 +545,30 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
         try {
             File photoFile = crearArchivoImagen();
+
+            // 🔥 ASEGURAR RUTA SIEMPRE
+            rutaFotoActual = photoFile.getAbsolutePath();
+
             photoUri = FileProvider.getUriForFile(
                     this,
                     getPackageName() + ".provider",
                     photoFile
             );
 
-            Log.d("FOTO_PATH", photoFile.getAbsolutePath());
-            Log.d("FOTO_URI", photoUri.toString());
+            Log.d("FOTO_DEBUG", "Ruta: " + rutaFotoActual);
+            Log.d("FOTO_DEBUG", "URI: " + photoUri);
+
             cameraLauncher.launch(photoUri);
 
         } catch (IOException e) {
+            Log.e("FOTO_DEBUG", "Error creando archivo", e);
             Toast.makeText(this, "Error creando archivo de imagen", Toast.LENGTH_LONG).show();
         }
     }
 
     /**
      * Crea un archivo temporal en el almacenamiento público de imágenes para guardar la captura de la cámara.
+     *
      * @return Objeto File apuntando a la nueva imagen.
      * @throws IOException Sí ocurre un error durante la creación del archivo.
      */
@@ -522,6 +625,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     /**
      * Carga la información de una visita desde la base de datos y actualiza la UI para modo edición.
+     *
      * @param id Identificador único del registro en la base de datos.
      */
     private void cargarDatos(int id) {
@@ -558,8 +662,9 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     /**
      * Utilidad para encontrar la posición de un valor específico dentro del adaptador de un Spinner.
+     *
      * @param spinner El componente Spinner a evaluar.
-     * @param value El valor en formato String a localizar.
+     * @param value   El valor en formato String a localizar.
      * @return El índice del valor encontrado o 0 por defecto.
      */
     private int getIndex(Spinner spinner, String value) {
@@ -573,6 +678,7 @@ public class Act_NuevaVisita extends AppCompatActivity {
 
     /**
      * Realiza una copia física de una imagen seleccionada desde una URI externa a una ubicación local gestionada por la app.
+     *
      * @param uri URI de origen de la imagen.
      * @return Ruta absoluta del archivo copiado en el almacenamiento local.
      * @throws IOException Si falla el flujo de lectura o escritura.

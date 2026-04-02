@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616685322013",
+    "project_id": "herramienta-censador-40ef6",
+    "storage_bucket": "herramienta-censador-40ef6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616685322013:android:844f66eda7383f6696ebf4",
+        "android_client_info": {
+          "package_name": "nelandac.app.herramientacensador"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjhQMyzZxzuhu7cfzYKu6y3vaibv3QDwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
