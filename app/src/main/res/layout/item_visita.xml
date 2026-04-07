@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Layout: item_visita.xml
     Responsabilidad: Define la estructura visual de un elemento individual (fila) dentro del listado de visitas.
     Estructura: Utiliza un CardView para proporcionar elevación y bordes redondeados, mejorando la separación
@@ -91,6 +90,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/lat_lng" />
 
+            <TextView
+                android:id="@+id/txtSeguimientos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cant_seguimientos"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
         <!-- Acceso al Menú Contextual (Overflow) -->
@@ -101,6 +107,7 @@
             android:layout_alignParentEnd="true"
             android:contentDescription="@string/opciones_de_visita"
             android:src="@drawable/ic_more_vert" />
+
 
     </RelativeLayout>
 

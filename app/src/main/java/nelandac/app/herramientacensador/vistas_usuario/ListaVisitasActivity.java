@@ -41,6 +41,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import nelandac.app.herramientacensador.R;
+import nelandac.app.herramientacensador.modelos.ReporteItem;
+import nelandac.app.herramientacensador.modelos.Seguimiento;
 import nelandac.app.herramientacensador.modelos.Visita;
 import nelandac.app.herramientacensador.modelos.VisitaDAO;
 import nelandac.app.herramientacensador.modelos.VisitasAdapter;
@@ -53,7 +55,7 @@ public class ListaVisitasActivity extends AppCompatActivity {
     private List<Visita> listaFull;
     private List<Visita> listaFiltrada;
 
-    private Chip chipHoy, chipFecha, chipMes, chipAnio, chipTodo, chipAltas;
+    private Chip chipHoy, chipFecha, chipMes, chipAnio, chipTodo, chipAltas, chipSeguimientos;
     private TextInputEditText edtBuscar;
     Toolbar toolbar;
 
@@ -98,6 +100,7 @@ public class ListaVisitasActivity extends AppCompatActivity {
         chipAnio = findViewById(R.id.chipAnio);
         chipTodo = findViewById(R.id.chipTodo);
         chipAltas = findViewById(R.id.chipAltas);
+        chipSeguimientos = findViewById(R.id.chipSeguimientos);
         edtBuscar = findViewById(R.id.edtBuscar);
         toolbar = findViewById(R.id.listaVisitas_toolbar);
         setSupportActionBar(toolbar);
@@ -142,6 +145,11 @@ public class ListaVisitasActivity extends AppCompatActivity {
 
         chipAltas.setOnClickListener(v -> {
             listaFull = dao.obtenerAltas();
+            filtrarPorNombre(edtBuscar.getText().toString());
+        });
+
+        chipSeguimientos.setOnClickListener(v -> {
+            listaFull = dao.obtenerVisitasConSeguimientos();
             filtrarPorNombre(edtBuscar.getText().toString());
         });
     }
@@ -275,34 +283,225 @@ public class ListaVisitasActivity extends AppCompatActivity {
     private void exportarExcel() {
         try {
             Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Visitas");
+            Sheet sheet = workbook.createSheet("Reporte");
 
-            String[] headers = {"ID", "Nombre Comercial", "Nombre Cliente", "Tipo Cliente",
+            // =====================================================
+            // 🔥 HEADERS NIVEL PROFESIONAL
+            // =====================================================
+            String[] headers = {
+                    "Tipo", "Fecha",
+                    "ID", "Nombre Comercial", "Nombre Cliente", "Tipo Cliente",
                     "Identificación", "Dirección", "Clasificación",
-                    "Teléfono", "Maps", "Día", "Venta", "Nuevo", "Código", "Fecha"};
+                    "Teléfono", "Maps", "Día", "Venta", "Nuevo", "Código", "Fecha Registro",
+                    "Fecha Seguimiento", "Estado Venta Seguimiento", "Comentarios Seguimiento",
+                    "Estado Venta", "Comentarios"
+            };
 
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
                 headerRow.createCell(i).setCellValue(headers[i]);
             }
 
+            VisitaDAO dao = new VisitaDAO(this);
+
             int rowNum = 1;
+
+            // 🔥 FECHA BASE SEGÚN FILTRO ACTUAL (puedes ajustarlo dinámico luego)
+            String fechaHoy = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+                    .format(new java.util.Date());
+
+            // =====================================================
+            // 🔥 LOOP PRINCIPAL (RESPETA TU FILTRO ACTUAL)
+            // =====================================================
             for (Visita v : listaFiltrada) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(v.getId());
-                row.createCell(1).setCellValue(v.getNombreComercial());
-                row.createCell(2).setCellValue(v.getNombreCliente());
-                row.createCell(3).setCellValue(v.getTipoCliente());
-                row.createCell(4).setCellValue(v.getNumeroIdentificacion());
-                row.createCell(5).setCellValue(v.getCoordenadas());
-                row.createCell(6).setCellValue(v.getClasificacionNegocio());
-                row.createCell(7).setCellValue(v.getTelefono());
-                row.createCell(8).setCellValue(v.getLinkGoogleMaps());
-                row.createCell(9).setCellValue(v.getDiaVisita());
-                row.createCell(10).setCellValue(v.getClienteConVenta());
-                row.createCell(11).setCellValue(v.getClienteNuevo());
-                row.createCell(12).setCellValue(v.getClienteTieneCodigo());
-                row.createCell(13).setCellValue(v.getFechaRegistroSoloFecha());
+
+                List<Seguimiento> seguimientos =
+                        dao.obtenerSeguimientosPorVisitaYFecha(v.getId(), fechaHoy);
+
+                // =====================================================
+                // 🟢 VISITA (SIN SEGUIMIENTO EN ESTE FILTRO)
+                // =====================================================
+                if (seguimientos.isEmpty()) {
+
+                    Row row = sheet.createRow(rowNum++);
+
+                    row.createCell(0).setCellValue("VISITA");
+                    row.createCell(1).setCellValue(v.getFechaRegistroSoloFecha());
+
+                    row.createCell(2).setCellValue(v.getId());
+                    row.createCell(3).setCellValue(v.getNombreComercial());
+                    row.createCell(4).setCellValue(v.getNombreCliente());
+                    row.createCell(5).setCellValue(v.getTipoCliente());
+                    row.createCell(6).setCellValue(v.getNumeroIdentificacion());
+                    row.createCell(7).setCellValue(v.getCoordenadas());
+                    row.createCell(8).setCellValue(v.getClasificacionNegocio());
+                    row.createCell(9).setCellValue(v.getTelefono());
+                    row.createCell(10).setCellValue(v.getLinkGoogleMaps());
+                    row.createCell(11).setCellValue(v.getDiaVisita());
+                    row.createCell(12).setCellValue(v.getClienteConVenta());
+                    row.createCell(13).setCellValue(v.getClienteNuevo());
+                    row.createCell(14).setCellValue(v.getClienteTieneCodigo());
+                    row.createCell(15).setCellValue(v.getFechaRegistroSoloFecha());
+
+                    // Seguimiento vacío
+                    row.createCell(16).setCellValue("-");
+                    row.createCell(17).setCellValue("-");
+                    row.createCell(18).setCellValue("-");
+
+                    // Campos globales
+                    row.createCell(19).setCellValue(v.getClienteConVenta());
+                    row.createCell(20).setCellValue("Registro nuevo");
+                }
+
+                // =====================================================
+                // 🔵 SEGUIMIENTOS (SOLO DEL FILTRO)
+                // =====================================================
+                else {
+
+                    for (Seguimiento s : seguimientos) {
+
+                        Row row = sheet.createRow(rowNum++);
+
+                        row.createCell(0).setCellValue("SEGUIMIENTO");
+                        row.createCell(1).setCellValue(s.getFechaSeguimiento());
+
+                        row.createCell(2).setCellValue(v.getId());
+                        row.createCell(3).setCellValue(v.getNombreComercial());
+                        row.createCell(4).setCellValue(v.getNombreCliente());
+                        row.createCell(5).setCellValue(v.getTipoCliente());
+                        row.createCell(6).setCellValue(v.getNumeroIdentificacion());
+                        row.createCell(7).setCellValue(v.getCoordenadas());
+                        row.createCell(8).setCellValue(v.getClasificacionNegocio());
+                        row.createCell(9).setCellValue(v.getTelefono());
+                        row.createCell(10).setCellValue(v.getLinkGoogleMaps());
+                        row.createCell(11).setCellValue(v.getDiaVisita());
+                        row.createCell(12).setCellValue(v.getClienteConVenta());
+                        row.createCell(13).setCellValue(v.getClienteNuevo());
+                        row.createCell(14).setCellValue(v.getClienteTieneCodigo());
+                        row.createCell(15).setCellValue(v.getFechaRegistroSoloFecha());
+
+                        // Seguimiento
+                        row.createCell(16).setCellValue(s.getFechaSeguimiento());
+                        row.createCell(17).setCellValue(s.getEstadoVenta());
+                        row.createCell(18).setCellValue(s.getComentarios());
+
+                        // Campos globales
+                        row.createCell(19).setCellValue(s.getEstadoVenta());
+                        row.createCell(20).setCellValue(s.getComentarios());
+                    }
+                }
+            }
+
+            // =====================================================
+            // 🔥 ANCHOS PROFESIONALES (SIN autoSize)
+            // =====================================================
+            for (int i = 0; i < headers.length; i++) {
+                sheet.setColumnWidth(i, 5000);
+            }
+
+            sheet.createFreezePane(0, 1);
+
+            File archivo = new File(getExternalFilesDir(null), "reporte.xlsx");
+            FileOutputStream fos = new FileOutputStream(archivo);
+            workbook.write(fos);
+            fos.close();
+            workbook.close();
+
+            compartirExcel(archivo);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error al exportar", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*private void exportarExcel() {
+        try {
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Visitas");
+
+            // 🔥 HEADERS NUEVOS (incluye seguimiento)
+            String[] headers = {
+                    "ID", "Nombre Comercial", "Nombre Cliente", "Tipo Cliente",
+                    "Identificación", "Dirección", "Clasificación",
+                    "Teléfono", "Maps", "Día", "Venta", "Nuevo", "Código", "Fecha Registro",
+                    "Fecha Seguimiento", "Estado Venta Seguimiento", "Comentarios Seguimiento"
+            };
+
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                headerRow.createCell(i).setCellValue(headers[i]);
+            }
+
+            VisitaDAO dao = new VisitaDAO(this);
+
+            int rowNum = 1;
+
+            // 🔥 BUCLE PRINCIPAL (VISITAS)
+            for (Visita v : listaFiltrada) {
+
+                List<Seguimiento> seguimientos = dao.obtenerSeguimientosPorVisita(v.getId());
+
+                // =====================================================
+                // 🔥 CASO 1: SIN SEGUIMIENTOS
+                // =====================================================
+                if (seguimientos.isEmpty()) {
+
+                    Row row = sheet.createRow(rowNum++);
+
+                    // Datos de visita
+                    row.createCell(0).setCellValue(v.getId());
+                    row.createCell(1).setCellValue(v.getNombreComercial());
+                    row.createCell(2).setCellValue(v.getNombreCliente());
+                    row.createCell(3).setCellValue(v.getTipoCliente());
+                    row.createCell(4).setCellValue(v.getNumeroIdentificacion());
+                    row.createCell(5).setCellValue(v.getCoordenadas());
+                    row.createCell(6).setCellValue(v.getClasificacionNegocio());
+                    row.createCell(7).setCellValue(v.getTelefono());
+                    row.createCell(8).setCellValue(v.getLinkGoogleMaps());
+                    row.createCell(9).setCellValue(v.getDiaVisita());
+                    row.createCell(10).setCellValue(v.getClienteConVenta());
+                    row.createCell(11).setCellValue(v.getClienteNuevo());
+                    row.createCell(12).setCellValue(v.getClienteTieneCodigo());
+                    row.createCell(13).setCellValue(v.getFechaRegistroSoloFecha());
+
+                    // Seguimiento vacío
+                    row.createCell(14).setCellValue("SIN SEGUIMIENTO");
+                    row.createCell(15).setCellValue("-");
+                    row.createCell(16).setCellValue("-");
+                }
+
+                // =====================================================
+                // 🔥 CASO 2: CON SEGUIMIENTOS
+                // =====================================================
+                else {
+
+                    for (Seguimiento s : seguimientos) {
+
+                        Row row = sheet.createRow(rowNum++);
+
+                        // Datos de visita (repetidos por cada seguimiento)
+                        row.createCell(0).setCellValue(v.getId());
+                        row.createCell(1).setCellValue(v.getNombreComercial());
+                        row.createCell(2).setCellValue(v.getNombreCliente());
+                        row.createCell(3).setCellValue(v.getTipoCliente());
+                        row.createCell(4).setCellValue(v.getNumeroIdentificacion());
+                        row.createCell(5).setCellValue(v.getCoordenadas());
+                        row.createCell(6).setCellValue(v.getClasificacionNegocio());
+                        row.createCell(7).setCellValue(v.getTelefono());
+                        row.createCell(8).setCellValue(v.getLinkGoogleMaps());
+                        row.createCell(9).setCellValue(v.getDiaVisita());
+                        row.createCell(10).setCellValue(v.getClienteConVenta());
+                        row.createCell(11).setCellValue(v.getClienteNuevo());
+                        row.createCell(12).setCellValue(v.getClienteTieneCodigo());
+                        row.createCell(13).setCellValue(v.getFechaRegistroSoloFecha());
+
+                        // 🔥 Datos del seguimiento
+                        row.createCell(14).setCellValue(s.getFechaSeguimiento());
+                        row.createCell(15).setCellValue(s.getEstadoVenta());
+                        row.createCell(16).setCellValue(s.getComentarios());
+                    }
+                }
             }
 
             File archivo = new File(getExternalFilesDir(null), "visitas.xlsx");
@@ -314,9 +513,10 @@ public class ListaVisitasActivity extends AppCompatActivity {
             compartirExcel(archivo);
 
         } catch (Exception e) {
+            e.printStackTrace();
             Toast.makeText(this, "Error al exportar", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     private void compartirExcel(File archivo) {
         Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".provider", archivo);

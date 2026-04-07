@@ -416,4 +416,137 @@ public class VisitaDAO {
         return lista;
     }
 
+    /**
+     * Obtiene todas las visitas junto con la cantidad de seguimientos asociados.
+     * Esto permite:
+     * - Mostrar indicador en UI
+     * - Filtrar visitas con actividad
+     */
+    public List<Visita> obtenerVisitasConSeguimientos() {
+
+        List<Visita> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String query =
+                "SELECT v.*, " +
+                        "COUNT(b.id_seguimiento) AS total_seguimientos " +
+                        "FROM visitas v " +
+                        "LEFT JOIN bitacora b ON v.id = b.id_visita_maestro " +
+                        "GROUP BY v.id " +
+                        "ORDER BY v.fecha_registro DESC";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Visita v = mapCursorToVisita(cursor);
+
+                // 🔥 NUEVO CAMPO DINÁMICO
+                int totalSeguimientos = cursor.getInt(cursor.getColumnIndexOrThrow("total_seguimientos"));
+
+                // Usamos el módulo como campo auxiliar (sin romper modelo)
+                v.setModulo(v.getModulo() + " | Seg: " + totalSeguimientos);
+
+                lista.add(v);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lista;
+    }
+
+    /**
+     * 🔥 NIVEL PRO
+     * Retorna un dataset unificado de VISITAS + SEGUIMIENTOS según filtro de fecha
+     */
+    public List<ReporteItem> obtenerReportePorRango(String fechaInicio, String fechaFin) {
+
+        List<ReporteItem> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // =====================================================
+        // 🔵 SEGUIMIENTOS EN RANGO
+        // =====================================================
+        String querySeg =
+                "SELECT b.*, v.* FROM bitacora b " +
+                        "INNER JOIN visitas v ON v.id = b.id_visita_maestro " +
+                        "WHERE DATE(b.fecha_seguimiento) BETWEEN DATE(?) AND DATE(?)";
+
+        Cursor cSeg = db.rawQuery(querySeg, new String[]{fechaInicio, fechaFin});
+
+        if (cSeg.moveToFirst()) {
+            do {
+                Seguimiento s = new Seguimiento();
+                s.setIdSeguimiento(cSeg.getInt(cSeg.getColumnIndexOrThrow("id_seguimiento")));
+                s.setFechaSeguimiento(cSeg.getString(cSeg.getColumnIndexOrThrow("fecha_seguimiento")));
+                s.setComentarios(cSeg.getString(cSeg.getColumnIndexOrThrow("comentarios")));
+                s.setEstadoVenta(cSeg.getString(cSeg.getColumnIndexOrThrow("estado_venta")));
+
+                Visita v = mapCursorToVisita(cSeg);
+
+                lista.add(new ReporteItem(ReporteItem.TIPO_SEGUIMIENTO, v, s));
+
+            } while (cSeg.moveToNext());
+        }
+        cSeg.close();
+
+        // =====================================================
+        // 🟢 VISITAS NUEVAS EN RANGO
+        // =====================================================
+        String queryVis =
+                "SELECT * FROM visitas " +
+                        "WHERE DATE(fecha_registro) BETWEEN DATE(?) AND DATE(?)";
+
+        Cursor cVis = db.rawQuery(queryVis, new String[]{fechaInicio, fechaFin});
+
+        if (cVis.moveToFirst()) {
+            do {
+                Visita v = mapCursorToVisita(cVis);
+
+                lista.add(new ReporteItem(ReporteItem.TIPO_VISITA, v, null));
+
+            } while (cVis.moveToNext());
+        }
+        cVis.close();
+
+        db.close();
+        return lista;
+    }
+
+    /**
+     * 🔥 NUEVO - FILTRO POR FECHA EXACTA
+     */
+    public List<Seguimiento> obtenerSeguimientosPorVisitaYFecha(int idVisita, String fecha) {
+
+        List<Seguimiento> lista = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM bitacora " +
+                        "WHERE id_visita_maestro = ? " +
+                        "AND DATE(fecha_seguimiento) = DATE(?) " +
+                        "ORDER BY fecha_seguimiento DESC",
+                new String[]{String.valueOf(idVisita), fecha}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Seguimiento s = new Seguimiento();
+                s.setIdSeguimiento(cursor.getInt(cursor.getColumnIndexOrThrow("id_seguimiento")));
+                s.setIdVisitaMaestro(cursor.getInt(cursor.getColumnIndexOrThrow("id_visita_maestro")));
+                s.setFechaSeguimiento(cursor.getString(cursor.getColumnIndexOrThrow("fecha_seguimiento")));
+                s.setFotoSeguimiento(cursor.getString(cursor.getColumnIndexOrThrow("foto_seguimiento")));
+                s.setComentarios(cursor.getString(cursor.getColumnIndexOrThrow("comentarios")));
+                s.setEstadoVenta(cursor.getString(cursor.getColumnIndexOrThrow("estado_venta")));
+                lista.add(s);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return lista;
+    }
 }

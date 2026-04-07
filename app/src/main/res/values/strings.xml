@@ -87,6 +87,9 @@
     <string name="evidencia_fotografica">Evidencia Fotográfica</string>
     <string name="nombre_cliente">Nombre cliente</string>
     <string name="seguimiento">Seguimiento</string>
+    <string name="seguimientos">Seguimientos</string>
+    <string name="cant_seguimientos">Seguimientos:</string>
+    <string name="seguimientos_0">Seguimientos: 0</string>
 
     <!-- Spinner: Días de la semana -->
     <string-array name="diaSemana">

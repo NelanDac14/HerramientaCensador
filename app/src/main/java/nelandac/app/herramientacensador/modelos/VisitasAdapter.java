@@ -98,6 +98,12 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
                     .into(holder.imgFoto);
         }
 
+        if (visita.getModulo() != null && visita.getModulo().contains("Seguimientos:")) {
+            holder.txtSeguimientos.setText(visita.getModulo());
+        } else {
+            holder.txtSeguimientos.setText(R.string.seguimientos_0);
+        }
+
         /**
          * Evento de clic en el contenedor: Navegación al expediente del cliente.
          */
@@ -175,7 +181,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgFoto, btnMenu;
-        TextView txtNumero, txtNombre, txtCliente, txtTelefono, txtDia, txtCoordenadas;
+        TextView txtNumero, txtNombre, txtCliente, txtTelefono, txtDia, txtCoordenadas, txtSeguimientos;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -187,6 +193,7 @@ public class VisitasAdapter extends RecyclerView.Adapter<VisitasAdapter.ViewHold
             txtTelefono = itemView.findViewById(R.id.txtTelefono);
             txtDia = itemView.findViewById(R.id.txtDiaVisita);
             txtCoordenadas = itemView.findViewById(R.id.txtCoordenadas);
+            txtSeguimientos = itemView.findViewById(R.id.txtSeguimientos);
         }
     }
 
