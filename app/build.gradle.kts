@@ -5,15 +5,11 @@ plugins {
 
 android {
     namespace = "nelandac.app.herramientacensador"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "nelandac.app.herramientacensador"
-        minSdk = 35
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
